@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:gravity="center"
+    android:padding="7dp">
+    <ImageView
+        android:layout_width="60dp"
+        android:layout_height="60dp" 
+        android:src="@drawable/normani"
+        android:id="@+id/current_playing_song_image"/>
+    <TextView
+        android:text="Single-line text view twidget"
+        android:singleLine="true"
+        android:ellipsize="marquee"
+        android:marqueeRepeatLimit ="marquee_forever"
+        android:focusable="true"
+        android:textSize="15sp"
+        android:textStyle="bold"
+        android:padding="5dp"
+        android:layout_centerInParent="true"
+        android:layout_marginStart="20dp"
+        android:textColor="#fff"
+        android:id="@+id/current_song_name"
+        android:layout_toEndOf="@id/current_playing_song_image"
+        android:focusableInTouchMode="true"
+        android:scrollHorizontally="true"
+        android:layout_width="wrap_content"
+        android:layout_height="30dp"/>
+
+    <ImageView
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:src="@drawable/outline_pause_circle_outline_white_48"
+        android:layout_alignParentEnd="true"
+        android:scaleType="centerCrop"
+        android:layout_centerVertical="true"
+        android:id="@+id/play_pause_current_song"/>
+
+
+</RelativeLayout>

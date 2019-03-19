@@ -1,0 +1,42 @@
+{
+  "project_info": {
+    "project_number": "401615935356",
+    "firebase_url": "https://symphony-logix.firebaseio.com",
+    "project_id": "symphony-logix",
+    "storage_bucket": "symphony-logix.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:401615935356:android:b1ee79804905d85f",
+        "android_client_info": {
+          "package_name": "com.logix.symphony"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "401615935356-t0t27ct8jljlbjcu2ilq7j07od0l0pds.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDrn2NypSV8q3grrSrbcKYMQBfA1qEOyyU"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

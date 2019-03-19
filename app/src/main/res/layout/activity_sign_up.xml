@@ -1,0 +1,155 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".SignUpActivity"
+    android:id="@+id/signup_layout"
+    android:background="@drawable/login_background">
+
+
+    <android.support.constraint.Guideline
+        android:layout_width="wrap_content"
+        android:layout_height="567dp"
+        android:id="@+id/v_guideline1"
+        android:orientation="vertical"
+        tools:layout_editor_absoluteY="0dp"
+        tools:layout_editor_absoluteX="58dp"
+        app:layout_constraintGuide_percent="0.15104167"/>
+
+    <android.support.constraint.Guideline
+        android:layout_width="wrap_content"
+        android:layout_height="567dp"
+        android:id="@+id/v_guideline2"
+        android:orientation="vertical"
+        tools:layout_editor_absoluteY="0dp"
+        tools:layout_editor_absoluteX="329dp"
+        app:layout_constraintGuide_percent="0.8567708"/>
+
+    <android.support.constraint.Guideline
+        android:id="@+id/v_guideline3"
+        android:layout_width="wrap_content"
+        android:layout_height="567dp"
+        android:orientation="vertical"
+        app:layout_constraintGuide_percent="0.25" />
+
+    <android.support.constraint.Guideline
+        android:layout_width="384dp"
+        android:layout_height="wrap_content"
+        android:id="@+id/h_guideline1"
+        android:orientation="horizontal"
+        tools:layout_editor_absoluteY="326dp"
+        tools:layout_editor_absoluteX="0dp"
+        app:layout_constraintGuide_percent="0.5749559"/>
+
+    <android.support.constraint.Guideline
+        android:id="@+id/h_guideline4"
+        android:layout_width="384dp"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_percent="0.09" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:gravity="center"
+        app:layout_constraintTop_toTopOf="@id/h_guideline4">
+        <ImageView
+            android:layout_width="150dp"
+            android:layout_height="150dp"
+            android:src="@mipmap/sym4"
+            android:scaleType="centerCrop"/>
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/app_name"
+            android:textColor="#fff"
+            android:textSize="40dp"/>
+    </LinearLayout>
+
+
+
+    <Button
+        android:text="Google"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:id="@+id/google"
+        android:textColor="@android:color/black"
+        app:layout_constraintRight_toLeftOf="@+id/v_guideline2"
+        app:layout_constraintLeft_toLeftOf="@+id/v_guideline1"
+        app:layout_constraintTop_toTopOf="@+id/h_guideline1"
+        android:drawableLeft="@drawable/google"
+        android:paddingLeft="8dp"
+        android:background="@drawable/google_button_bg"/>
+
+    <Button
+        android:id="@+id/facebook"
+        android:layout_width="0dp"
+        android:layout_height="50dp"
+        android:layout_marginTop="8dp"
+        android:background="@drawable/fb_button_bg"
+        android:drawableLeft="@drawable/fb_logo"
+        android:text="Facebook"
+        android:textColor="@android:color/white"
+        app:layout_constraintLeft_toLeftOf="@+id/v_guideline1"
+        app:layout_constraintRight_toLeftOf="@+id/v_guideline2"
+        app:layout_constraintTop_toBottomOf="@+id/google" />
+
+    <Button
+        android:text="Login"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:id="@+id/login"
+        android:textColor="@android:color/white"
+        app:layout_constraintRight_toLeftOf="@+id/v_guideline2"
+        app:layout_constraintLeft_toLeftOf="@+id/v_guideline1"
+        android:background="@drawable/other_acc_button_bg"
+        app:layout_constraintTop_toBottomOf="@+id/orImageView"
+        android:layout_marginTop="8dp"/>
+
+    <ImageView
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        app:srcCompat="@drawable/or"
+        android:id="@+id/orImageView"
+        app:layout_constraintLeft_toLeftOf="@+id/v_guideline1"
+        app:layout_constraintRight_toLeftOf="@+id/v_guideline2"
+        app:layout_constraintTop_toBottomOf="@+id/facebook"
+        android:layout_marginTop="8dp"/>
+
+    <CheckBox
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/termCheckBox"
+        app:layout_constraintTop_toBottomOf="@+id/login"
+        app:buttonTint="#80ffffff"
+        app:layout_constraintLeft_toLeftOf="@+id/v_guideline3"/>
+
+    <TextView
+        android:text="I agree to the Terms of Service."
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/firstTermTextView"
+        android:textSize="10sp"
+        android:textColor="#80ffffff"
+        app:layout_constraintLeft_toRightOf="@+id/termCheckBox"
+        app:layout_constraintTop_toBottomOf="@+id/login"
+        android:layout_marginTop="13dp"/>
+
+    <TextView
+        android:text="JOOX User Terms and Privacy Policy"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/secTermTextView"
+        android:textColor="#80ffffff"
+        android:textSize="10sp"
+        app:layout_constraintTop_toBottomOf="@+id/termCheckBox"
+        app:layout_constraintLeft_toRightOf="@+id/v_guideline3"
+        android:layout_marginStart="4dp"
+        app:layout_constraintLeft_toLeftOf="@+id/v_guideline3"
+        android:layout_marginLeft="4dp"/>
+
+
+</android.support.constraint.ConstraintLayout>
