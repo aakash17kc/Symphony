@@ -1,8 +1,36 @@
 <?xml version="1.0" encoding="utf-8"?>
+
+
+<RelativeLayout
+xmlns:android="http://schemas.android.com/apk/res/android" android:layout_width="match_parent"
+android:layout_height="match_parent"
+android:orientation="vertical"
+
+    >
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+    <ImageView android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:scaleType="centerCrop"
+        android:src="@drawable/normani"
+        android:id="@+id/playing_song_image"
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        />
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@drawable/song_screen_gradient" >
+    </FrameLayout>
+    </FrameLayout>
+
 <LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android" android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    >
+
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -22,7 +50,7 @@
                 android:layout_gravity="center"
                 android:text="PLAYING FROM"
                 android:layout_marginStart="30dp"
-                android:textColor="#000" />
+                android:textColor="#fff" />
 
             <TextView
                 android:layout_width="wrap_content"
@@ -33,7 +61,7 @@
                 android:layout_marginLeft="30dp"
                 android:layout_gravity="center"
                 android:text="ALBUM NAME"
-                android:textColor="#000" />
+                android:textColor="#fff" />
     </LinearLayout>
 
     <LinearLayout
@@ -44,12 +72,7 @@
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_weight="0.8">
-        <ImageView
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:scaleType="centerCrop"
-            android:src="@drawable/normani"
-            android:id="@+id/playing_song_image"/>
+
         </LinearLayout>
 
         <LinearLayout
@@ -76,7 +99,7 @@
                     android:layout_gravity="center"
                     android:id="@+id/playing_song_name"
                     android:text="Dancing With Strnager"
-                    android:textColor="#000"/>
+                    android:textColor="#fff"/>
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -86,7 +109,7 @@
 
                     android:text="Sam Smith, Normani"
                     android:layout_marginTop="2dp"
-                    android:textColor="#000"/>
+                    android:textColor="#fff"/>
             </LinearLayout>
             <ImageView
                 android:layout_width="45dp"
@@ -180,3 +203,4 @@
     </LinearLayout>
 
 </LinearLayout>
+</RelativeLayout>
