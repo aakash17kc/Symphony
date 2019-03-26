@@ -1,6 +1,7 @@
-package com.logix.symphony;
+package com.logix.symphony.Model;
 
-public class SongClass {
+public class HorizontalRecylerModel {
+
     private String mSongName;
     private int mResource;
 
@@ -12,7 +13,7 @@ public class SongClass {
         return mResource;
     }
 
-    public SongClass(String mSongName, int mResource) {
+    public HorizontalRecylerModel(String mSongName, int mResource) {
         this.mSongName = mSongName;
         this.mResource = mResource;
     }

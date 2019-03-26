@@ -11,16 +11,21 @@
 
     </RelativeLayout>
 
-    <LinearLayout
+    <android.support.v7.widget.RecyclerView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical"
         android:layout_below="@id/tab"
-        android:id="@+id/songListInflate">
+        android:id="@+id/verticalRecycler"
+        android:nestedScrollingEnabled="true"
+        android:clickable="true"
+        android:focusable="true"
+
+        android:foreground="?android:attr/selectableItemBackground">
 
 
 
-    </LinearLayout>
+    </android.support.v7.widget.RecyclerView>
 
 
 
