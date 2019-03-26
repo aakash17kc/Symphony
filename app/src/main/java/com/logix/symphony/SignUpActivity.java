@@ -118,6 +118,7 @@ public class SignUpActivity extends AppCompatActivity implements View.OnClickLis
     private void updateUI(FirebaseUser user) {
         if(user!=null){
                 startActivity(new Intent(SignUpActivity.this,SongActivity.class));
+                finish();
         }
     }
     @Override

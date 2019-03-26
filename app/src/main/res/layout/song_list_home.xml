@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout android:layout_width="match_parent"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+
+android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:id="@+id/songList"
+    android:paddingBottom="46dp"
+    >
+
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        style="@style/TextAppearance"
+        android:text="Trending"
+        android:gravity="center"
+        android:id="@+id/playlistName"
+        />
+    <android.support.v7.widget.RecyclerView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:id="@+id/recyclerTrending"
+        android:nestedScrollingEnabled="true"
+        >
+
+    </android.support.v7.widget.RecyclerView>
+</LinearLayout>

@@ -17,6 +17,11 @@
     <style name="SongListTheme" parent="Theme.AppCompat.Light.DarkActionBar">
         <item name="actionBarItemBackground">@android:color/transparent</item>
     </style>
+    <style name="TextAppearance" >
+        <item name="android:textColor">#fff</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:textSize">16sp</item>
+    </style>
 
 
 

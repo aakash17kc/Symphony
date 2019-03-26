@@ -1,20 +1,24 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="150dp"
-    android:layout_height="match_parent"
+    android:layout_width="130dp"
+    android:layout_height="wrap_content"
     android:orientation="vertical"
+    android:layout_marginLeft="16dp"
+
 >
     <ImageView
-        android:layout_width="150dp"
-        android:layout_height="150dp"
+        android:layout_width="130dp"
+        android:layout_height="130dp"
         android:scaleType="centerCrop"
+        android:id="@+id/songThumbnail"
         android:src="@drawable/zara"/>
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
         android:text="So Good"
+        android:id="@+id/songName"
         android:textStyle="bold"
         android:gravity="center"/>
 

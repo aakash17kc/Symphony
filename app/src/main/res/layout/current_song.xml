@@ -4,10 +4,11 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:gravity="center"
-    android:padding="7dp">
+    android:padding="7dp"
+    android:background="@color/glossblack">
     <ImageView
-        android:layout_width="60dp"
-        android:layout_height="60dp" 
+        android:layout_width="40dp"
+        android:layout_height="40dp"
         android:src="@drawable/normani"
         android:id="@+id/current_playing_song_image"/>
     <TextView
@@ -30,11 +31,12 @@
         android:layout_height="30dp"/>
 
     <ImageView
-        android:layout_width="50dp"
-        android:layout_height="50dp"
+        android:layout_width="27dp"
+        android:layout_height="27dp"
         android:src="@drawable/outline_pause_circle_outline_white_48"
         android:layout_alignParentEnd="true"
         android:scaleType="centerCrop"
+        android:layout_marginRight="15dp"
         android:layout_centerVertical="true"
         android:id="@+id/play_pause_current_song"/>
 
