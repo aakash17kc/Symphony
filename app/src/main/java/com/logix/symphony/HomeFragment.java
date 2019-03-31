@@ -1,6 +1,7 @@
 package com.logix.symphony;
 
 import android.content.Context;
+import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -10,11 +11,15 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.logix.symphony.Adapters.HorizontalRecyclerAdapter;
 import com.logix.symphony.Adapters.VerticalRecyclerAdapter;
+import com.logix.symphony.Interfaces.AdapterClickInterface;
 import com.logix.symphony.Model.HorizontalRecylerModel;
 import com.logix.symphony.Model.VerticalRecyclerModel;
 
@@ -52,18 +57,18 @@ public class HomeFragment extends Fragment {
         verticalRecycler.setLayoutManager(new LinearLayoutManager(getActivity(),LinearLayoutManager.VERTICAL,false));
         verticalRecycler.setHasFixedSize(true);
 
-        verticalRecyclerAdapter = new VerticalRecyclerAdapter(getActivity(), verticalList);
+        HomeFragment homeFragment = new HomeFragment();
+
+        verticalRecyclerAdapter = new VerticalRecyclerAdapter(getActivity(), verticalList,homeFragment, new AdapterClickInterface() {
+            @Override
+            public void onAdapterClick(String hrm) {
+                Toast.makeText(getActivity()," "+hrm,Toast.LENGTH_SHORT).show();
+              //  startActivity(new Intent(getActivity(),CurrentSongActivity.class));
+            }
+        });
 
         verticalRecycler.setAdapter(verticalRecyclerAdapter);
         setData();
-
-
-
-
-
-
-
-
 
         FirebaseUser user = mAuth.getCurrentUser();
 
@@ -71,6 +76,9 @@ public class HomeFragment extends Fragment {
 
         return view;
     }
+
+
+
 
     private void setData() {
 
@@ -116,6 +124,8 @@ public class HomeFragment extends Fragment {
         super.onDetach();
         mListener = null;
     }
+
+
 
 
     public interface OnFragmentInteractionListener {

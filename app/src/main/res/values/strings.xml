@@ -25,5 +25,6 @@
     <string name="facebook_app_id">540905333099964</string>
     <string name="fb_login_protocol_scheme">fb540905333099964</string>
     <string name="devices_available">Devices Available</string>
+    <string name="artist_songs_or_albums">Artist, Songs or Albums</string>
 
 </resources>

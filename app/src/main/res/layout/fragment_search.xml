@@ -1,14 +1,108 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
+<android.support.design.widget.CoordinatorLayout android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".SearchFragment">
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    tools:context=".MyMusicFragment"
+    android:background="@drawable/fragment_background">
+    <android.support.design.widget.AppBarLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/app_bar_layout"
+        android:background="@android:color/transparent"
+        android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar">
+        <android.support.design.widget.CollapsingToolbarLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            app:layout_scrollFlags="exitUntilCollapsed|scroll"
+            app:contentScrim="?attr/colorPrimary"
+            app:expandedTitleMarginStart="56dp"
+            app:expandedTitleMarginEnd="56dp"
+            android:id="@+id/collapsinToolbar"
+            android:fitsSystemWindows="true"
+            >
 
-    <!-- TODO: Update blank fragment layout -->
-    <TextView
+
+                <android.support.v7.widget.Toolbar
+                    android:id="@+id/toolbar"
+                    android:layout_width="match_parent"
+                    android:layout_height="60dp"
+                    app:layout_collapseMode="pin"
+                    app:contentInsetLeft="0dp"
+                    app:contentInsetStart="0dp"
+                    android:contentInsetRight="0dp"
+                    android:contentInsetEnd="0dp"
+                    app:popupTheme="@style/ThemeOverlay.AppCompat.Light">
+
+
+                </android.support.v7.widget.Toolbar>
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Search"
+                    style="@style/TextAppearance"
+                    android:textSize="56dp"
+                    android:gravity="center"
+                    android:id="@+id/serach"
+                    android:layout_marginTop="200dp"
+                    android:layout_marginBottom="28dp"/>
+
+            <android.support.design.widget.TextInputEditText
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:background="@drawable/google_button_bg"
+                android:layout_marginLeft="20dp"
+                android:layout_marginRight="20dp"
+                android:drawableLeft="@drawable/ic_search_black_24dp"
+                android:paddingLeft="20dp"
+                android:hint="@string/artist_songs_or_albums"
+                android:textStyle="bold"
+                android:id="@+id/search_bar"
+                android:textColor="#000"
+                android:layout_alignParentBottom="true"
+                android:layout_below="@id/serach"
+                />
+            </RelativeLayout>
+
+
+</android.support.design.widget.CollapsingToolbarLayout>
+
+    </android.support.design.widget.AppBarLayout>
+
+    <android.support.v4.widget.NestedScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:text="@string/hello_blank_fragment" />
+        app:layout_anchor="@+id/app_bar_layout"
+        app:layout_anchorGravity="top|center"
+        android:clipToPadding="false"
+        android:id="@+id/nestedScrollView"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
-</FrameLayout>
+        <android.support.v7.widget.RecyclerView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:id="@+id/search_recommendation_recycler"
+            android:nestedScrollingEnabled="true"
+            android:clickable="true"
+            android:focusable="true"
+
+            android:foreground="?android:attr/selectableItemBackground"
+         />
+
+
+    </android.support.v4.widget.NestedScrollView>
+
+
+
+
+
+
+
+
+
+
+</android.support.design.widget.CoordinatorLayout>

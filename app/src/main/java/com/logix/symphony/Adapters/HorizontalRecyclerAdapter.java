@@ -1,6 +1,8 @@
 package com.logix.symphony.Adapters;
 
 import android.content.Context;
+import android.content.Intent;
+import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -8,7 +10,11 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import com.logix.symphony.CurrentSongActivity;
+import com.logix.symphony.HomeFragment;
+import com.logix.symphony.Interfaces.AdapterClickInterface;
 import com.logix.symphony.Model.HorizontalRecylerModel;
 import com.logix.symphony.R;
 
@@ -18,25 +24,62 @@ public class HorizontalRecyclerAdapter  extends RecyclerView.Adapter<HorizontalR
 
     Context context;
     ArrayList<HorizontalRecylerModel> list;
+    HomeFragment homeFragment;
 
-    public HorizontalRecyclerAdapter(Context context, ArrayList<HorizontalRecylerModel> list) {
+    int image = 0;
+    String mAlbumName;
+
+    ImageView imageView;
+    TextView textView;
+    AdapterClickInterface adapterClickInterface;
+
+
+    public HorizontalRecyclerAdapter(Context context, ArrayList<HorizontalRecylerModel> list,HomeFragment homeFragment, AdapterClickInterface adapterClickInterface) {
         this.context = context;
         this.list = list;
+        this.adapterClickInterface = adapterClickInterface;
+        this.homeFragment = homeFragment;
     }
+
 
     @NonNull
     @Override
     public HorizontalRecyclerHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int i) {
-        View view = LayoutInflater.from(context).inflate(R.layout.horizontal_recyler_model,viewGroup,false);
+        final View view = LayoutInflater.from(context).inflate(R.layout.horizontal_recyler_model,viewGroup,false);
+        imageView = view.findViewById(R.id.songThumbnail);
+        textView = view.findViewById(R.id.songName);
+
+      /*  imageView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+            }
+        });*/
+
+
+
         return new HorizontalRecyclerHolder(view);
     }
 
     @Override
     public void onBindViewHolder(@NonNull HorizontalRecyclerHolder horizontalRecyclerHolder, int i) {
 
-        HorizontalRecylerModel hrm = list.get(i);
+        final HorizontalRecylerModel hrm = list.get(i);
         horizontalRecyclerHolder.thumbanail.setImageResource(hrm.getmResource());
         horizontalRecyclerHolder.songName.setText(hrm.getmSongName());
+
+        horizontalRecyclerHolder.thumbanail.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                adapterClickInterface.onAdapterClick(hrm.getmSongName());
+
+            }
+        });
+
+
+
+
+
 
     }
 
@@ -55,4 +98,6 @@ public class HorizontalRecyclerAdapter  extends RecyclerView.Adapter<HorizontalR
             songName = itemView.findViewById(R.id.songName);
         }
     }
+
+
 }
