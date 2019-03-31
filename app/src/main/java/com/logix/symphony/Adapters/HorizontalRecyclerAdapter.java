@@ -49,14 +49,6 @@ public class HorizontalRecyclerAdapter  extends RecyclerView.Adapter<HorizontalR
         imageView = view.findViewById(R.id.songThumbnail);
         textView = view.findViewById(R.id.songName);
 
-      /*  imageView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-            }
-        });*/
-
-
 
         return new HorizontalRecyclerHolder(view);
     }
@@ -71,7 +63,7 @@ public class HorizontalRecyclerAdapter  extends RecyclerView.Adapter<HorizontalR
         horizontalRecyclerHolder.thumbanail.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                adapterClickInterface.onAdapterClick(hrm.getmSongName());
+                adapterClickInterface.onAdapterClick(hrm.getmSongName(),hrm.getmResource());
 
             }
         });

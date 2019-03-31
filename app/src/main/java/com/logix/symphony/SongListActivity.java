@@ -1,9 +1,13 @@
 package com.logix.symphony;
 
+import android.content.Intent;
+import android.support.design.widget.AppBarLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.widget.ImageView;
+import android.widget.TextView;
 
 import java.util.ArrayList;
 
@@ -29,6 +33,16 @@ public class SongListActivity extends AppCompatActivity {
         SongListAdapter songListAdapter = new SongListAdapter(this,list);
 
         songListView.setAdapter(songListAdapter);
+
+        Intent bundle = getIntent();
+        String albumName = bundle.getStringExtra("AlbumName");
+        int image = (int) bundle.getIntExtra("Image",R.drawable.downarow);
+
+        AppBarLayout appBarLayout = findViewById(R.id.app_bar_layout);
+        TextView album = findViewById(R.id.albumName);
+
+        appBarLayout.setBackgroundResource(image);
+        album.setText(albumName);
 
     }
 }

@@ -61,9 +61,14 @@ public class HomeFragment extends Fragment {
 
         verticalRecyclerAdapter = new VerticalRecyclerAdapter(getActivity(), verticalList,homeFragment, new AdapterClickInterface() {
             @Override
-            public void onAdapterClick(String hrm) {
+            public void onAdapterClick(String hrm,int image) {
                 Toast.makeText(getActivity()," "+hrm,Toast.LENGTH_SHORT).show();
-              //  startActivity(new Intent(getActivity(),CurrentSongActivity.class));
+                Intent intent = new Intent(getActivity(),SongListActivity.class);
+                Bundle bundle = new Bundle();
+                bundle.putString("AlbumName",hrm);
+                bundle.putInt("Image",image);
+                intent.putExtras(bundle);
+                startActivity(intent);
             }
         });
 
