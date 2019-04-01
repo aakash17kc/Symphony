@@ -26,5 +26,31 @@
     <string name="fb_login_protocol_scheme">fb540905333099964</string>
     <string name="devices_available">Devices Available</string>
     <string name="artist_songs_or_albums">Artist, Songs or Albums</string>
+    <string name="new_realeases">New Realeases</string>
+    <string name="playlists">Playlists</string>
+    <string name="downloaded">Downloaded</string>
+    <string name="on_device">On Device</string>
+    <string name="radio" />
+    <string name="Radio">Radio</string>
+    <string name="browse">Browse</string>
+    <string name="eletronic_dance">Eletronic/Dance</string>
+    <string name="all_moods_and_generes">All Moods and Generes</string>
+    <string name="user_profile_image">User Profile Image</string>
+    <string name="music_languages">Music Languages</string>
+    <string name="on_click_behaviour">On Click Behaviour</string>
+    <string name="streaming_quality">Streaming Quality</string>
+    <string name="equilizer">Equilizer</string>
+    <string name="english">English</string>
+    <string name="add_to_queue">Add to Queue</string>
+    <string name="music_streaming_preferences">Music Streaming Preferences</string>
+    <string name="offline_music_preferences">Offline Music Preferences</string>
+    <string name="download_quality">Download Quality</string>
+    <string name="high">High</string>
+    <string name="save_data_mode">Save Data Mode</string>
+    <string name="offline_songs_on_slow_internet">Offline Songs on Slow Internet</string>
+    <string name="profile">Profile</string>
+    <string name="subscription_details">Subscription Details</string>
+    <string name="my_profile">My Profile</string>
+    <string name="help_and_support">Help And Support</string>
 
 </resources>
