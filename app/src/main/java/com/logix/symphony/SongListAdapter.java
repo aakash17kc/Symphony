@@ -9,6 +9,8 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
+
 import java.util.ArrayList;
 
 public class SongListAdapter extends RecyclerView.Adapter<SongListAdapter.SongListHolder> {
@@ -25,13 +27,17 @@ public class SongListAdapter extends RecyclerView.Adapter<SongListAdapter.SongLi
     @Override
     public SongListHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int i) {
        View view  = LayoutInflater.from(context).inflate(R.layout.album_list_layout,viewGroup,false);
+       view.setSelected(true);
        return new SongListHolder(view);
     }
 
     @Override
     public void onBindViewHolder(@NonNull SongListHolder songListHolder, int i) {
         SongListClass songListClass = list.get(i);
-        songListHolder.image.setImageResource(songListClass.getImage());
+        ImageView image = songListHolder.image;
+        Glide.with(context).load(songListClass.getImage()).centerCrop().into(image);
+
+
         songListHolder.songName.setText(songListClass.getSongName());
         songListHolder.artistName.setText(songListClass.getArtistName());
 
@@ -51,6 +57,7 @@ public class SongListAdapter extends RecyclerView.Adapter<SongListAdapter.SongLi
 
             songName = itemView.findViewById(R.id.songListSongName);
             artistName = itemView.findViewById(R.id.songListSongArtist);
+            artistName.setSelected(true);
             image = itemView.findViewById(R.id.songListSongImage);
 
         }

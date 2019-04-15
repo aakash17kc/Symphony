@@ -70,9 +70,7 @@ public class VerticalRecyclerAdapter extends RecyclerView.Adapter<VerticalRecycl
         verticalItemHolder.albumList.setLayoutManager(new LinearLayoutManager(context,LinearLayoutManager.HORIZONTAL,false));
         verticalItemHolder.albumList.setAdapter(horizontalRecyclerAdapter);
 
-
-
-
+     
 
 
     }

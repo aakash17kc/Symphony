@@ -3,14 +3,14 @@ package com.logix.symphony;
 public class SongListClass {
 
 
-    public SongListClass(String songName, String artistName, int image) {
+    public SongListClass(String songName, String artistName, String image) {
         this.songName = songName;
         this.artistName = artistName;
         this.image = image;
     }
 
     String songName,artistName;
-    int image;
+    String image;
 
     public String getSongName() {
         return songName;
@@ -20,7 +20,7 @@ public class SongListClass {
         return artistName;
     }
 
-    public int getImage() {
+    public String getImage() {
         return image;
     }
 

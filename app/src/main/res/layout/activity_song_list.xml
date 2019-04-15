@@ -3,10 +3,11 @@
     android:layout_height="match_parent"
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:fab="http://schemas.android.com/tools">
+    xmlns:fab="http://schemas.android.com/tools"
+    android:background="#000">
     <android.support.design.widget.AppBarLayout
         android:layout_width="match_parent"
-        android:layout_height="380dp"
+        android:layout_height="300dp"
         android:id="@+id/app_bar_layout"
         android:background="@drawable/normani"
         android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar">
@@ -34,6 +35,12 @@
 
 
                 </android.support.v7.widget.Toolbar>
+                <ImageView
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:src="@drawable/zara"
+                    android:scaleType="centerCrop"
+                    android:id="@+id/songListCover"/>
 
                 <FrameLayout
                     android:layout_width="match_parent"
@@ -92,6 +99,7 @@
         app:layout_anchorGravity="top|center"
         android:clipToPadding="false"
         android:id="@+id/nestedScrollView"
+        android:layout_marginTop="27dp"
         app:layout_behavior="@string/appbar_scrolling_view_behavior"
      >
 
@@ -118,13 +126,14 @@
 
 
     <Button
-        android:layout_width="240dp"
-        android:layout_height="60dp"
+        android:layout_width="170dp"
+        android:layout_height="50dp"
         android:layout_gravity="center"
         android:text="SHUFFLE PLAY"
         android:elevation="16dp"
+        android:textStyle="bold"
         app:layout_anchor="@id/app_bar_layout"
-        android:textSize="20sp"
+        android:textSize="16sp"
         android:background="@drawable/fab_background"
         app:layout_anchorGravity="bottom|center"
         android:textColor="@android:color/white"

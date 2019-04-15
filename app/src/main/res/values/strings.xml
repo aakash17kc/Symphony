@@ -52,5 +52,18 @@
     <string name="subscription_details">Subscription Details</string>
     <string name="my_profile">My Profile</string>
     <string name="help_and_support">Help And Support</string>
+    <string name="settings">Settings</string>
+    <string name="free_account">Free Account</string>
+    <string name="go_premium">Go Premium</string>
+    <string name="aakash">Aakash</string>
+    <string name="view_profile">View Profile</string>
+    <string name="preferences">Preferences</string>
+    <string name="offline">Offline</string>
+    <string name="playback">Playback</string>
+    <string name="crossfade">Crossfade</string>
+    <string name="off">Off</string>
+    <string name="_12s">12s</string>
+    <string name="normalize_volume">Normalize Volume</string>
+    <string name="single_line_text_view_twidget">Single-line text view twidget</string>
 
 </resources>

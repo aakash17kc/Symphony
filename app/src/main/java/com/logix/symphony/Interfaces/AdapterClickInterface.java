@@ -8,5 +8,5 @@ import com.logix.symphony.SongListClass;
 
 public interface AdapterClickInterface{
 
-    void onAdapterClick(String hrm,int image);
+    void onAdapterClick(String hrm,String image);
 }

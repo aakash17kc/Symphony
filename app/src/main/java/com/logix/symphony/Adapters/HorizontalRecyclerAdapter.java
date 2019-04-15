@@ -2,6 +2,7 @@ package com.logix.symphony.Adapters;
 
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
@@ -12,6 +13,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
 import com.logix.symphony.CurrentSongActivity;
 import com.logix.symphony.HomeFragment;
 import com.logix.symphony.Interfaces.AdapterClickInterface;
@@ -57,7 +59,10 @@ public class HorizontalRecyclerAdapter  extends RecyclerView.Adapter<HorizontalR
     public void onBindViewHolder(@NonNull HorizontalRecyclerHolder horizontalRecyclerHolder, int i) {
 
         final HorizontalRecylerModel hrm = list.get(i);
-        horizontalRecyclerHolder.thumbanail.setImageResource(hrm.getmResource());
+        ImageView thumbnail = horizontalRecyclerHolder.thumbanail;
+       // horizontalRecyclerHolder.thumbanail.setImageBitmap(BitmapFactory.decodeFile(hrm.getmResource()));
+
+        Glide.with(context).load(hrm.getmResource()).centerCrop().into(thumbnail);
         horizontalRecyclerHolder.songName.setText(hrm.getmSongName());
 
         horizontalRecyclerHolder.thumbanail.setOnClickListener(new View.OnClickListener() {

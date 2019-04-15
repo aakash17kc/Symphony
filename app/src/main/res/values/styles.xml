@@ -23,17 +23,20 @@
         <item name="android:textSize">16sp</item>
     </style>
     <style name="AppTheme.MyMusicTextStyle">
-        <item name="android:textSize">15dp</item>
+        <item name="android:textSize">14sp</item>
         <item name="android:paddingStart">25dp</item>
         <item name="android:paddingEnd">0dp</item>
+        <item name="android:textStyle">bold</item>
+
         <item name="android:gravity">center_vertical</item>
     </style>
 
     <style name="AppTheme.MyMusicTextStyle2">
-        <item name="android:textSize">15dp</item>
+        <item name="android:textSize">14sp</item>
         <item name="android:paddingStart">0dp</item>
         <item name="android:paddingEnd">25dp</item>
         <item name="android:gravity">end|center_vertical</item>
+        <item name="android:textStyle">bold</item>
         <item name="android:textColor">@android:color/holo_blue_dark</item>
     </style>
 

@@ -5,40 +5,44 @@
     android:layout_height="wrap_content"
     android:gravity="center"
     android:padding="7dp"
-    android:background="@color/glossblack">
+    android:background="@android:color/black">
     <ImageView
         android:layout_width="50dp"
         android:layout_height="50dp"
         android:src="@drawable/normani"
         android:id="@+id/songListSongImage"/>
+
     <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerInParent="true"
-        android:layout_toEndOf="@id/songListSongImage"
         android:orientation="vertical"
+        android:layout_toEndOf="@id/songListSongImage"
 
         >
     <TextView
-        android:text="Single-line text view twidget"
+        android:layout_width="220dp"
+        android:layout_height="wrap_content"
+        android:text="@string/fui_sign_in_with_github"
         android:singleLine="true"
         android:ellipsize="marquee"
         android:marqueeRepeatLimit ="marquee_forever"
         android:focusable="true"
+        android:focusableInTouchMode="true"
+        android:scrollHorizontally="true"
         android:textSize="15sp"
         android:textStyle="bold"
         android:layout_marginStart="20dp"
         android:textColor="#fff"
         android:id="@+id/songListSongName"
-        android:focusableInTouchMode="true"
-        android:scrollHorizontally="true"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"/>
+       />
         <TextView
-            android:text="Single-line text view twidget"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/fui_sign_in_with_github"
             android:singleLine="true"
-            android:ellipsize="marquee"
-            android:marqueeRepeatLimit ="marquee_forever"
+            android:ellipsize="end"
+            android:maxLines="1"
             android:focusable="true"
             android:textSize="13sp"
             android:textStyle="bold"
@@ -46,21 +50,19 @@
             android:textColor="#fff"
             android:id="@+id/songListSongArtist"
             android:focusableInTouchMode="true"
-            android:scrollHorizontally="true"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"/>
+           />
     </LinearLayout>
-
 
     <ImageView
         android:layout_width="27dp"
         android:layout_height="35dp"
-        android:src="@drawable/song_options"
+        android:src="@drawable/outline_more_vert_white_18dp"
         android:layout_alignParentEnd="true"
         android:scaleType="centerCrop"
         android:layout_marginRight="15dp"
+        android:foregroundTint="#fff"
         android:layout_centerVertical="true"
-        android:id="@+id/play_pause_current_song"/>
+        android:id="@+id/songOptions"/>
 
 
 </RelativeLayout>
