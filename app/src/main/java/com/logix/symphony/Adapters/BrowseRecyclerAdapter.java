@@ -9,6 +9,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
 import com.logix.symphony.Model.BrowseDataModel;
 import com.logix.symphony.R;
 
@@ -40,7 +41,9 @@ public class BrowseRecyclerAdapter  extends RecyclerView.Adapter<BrowseRecyclerA
     public void onBindViewHolder(@NonNull BrowseDataHolder browseDataHolder, int i) {
         BrowseDataModel browseDataModel = list.get(i);
 
-        browseDataHolder.imageView.setImageResource(browseDataModel.getImage());
+        ImageView imageView = browseDataHolder.imageView;
+        Glide.with(context).load(browseDataModel.getImage()).centerCrop().into(imageView);
+
         browseDataHolder.textView.setText(browseDataModel.getPlaylistnName());
 
     }

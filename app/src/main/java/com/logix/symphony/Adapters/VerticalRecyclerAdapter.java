@@ -1,7 +1,6 @@
 package com.logix.symphony.Adapters;
 
 import android.content.Context;
-import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -10,15 +9,12 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
-import com.logix.symphony.CurrentSongActivity;
 import com.logix.symphony.HomeFragment;
 import com.logix.symphony.Interfaces.AdapterClickInterface;
 import com.logix.symphony.Model.HorizontalRecylerModel;
 import com.logix.symphony.R;
 import com.logix.symphony.Model.VerticalRecyclerModel;
-import com.logix.symphony.RecyclerItemClickListener;
 
 import java.util.ArrayList;
 

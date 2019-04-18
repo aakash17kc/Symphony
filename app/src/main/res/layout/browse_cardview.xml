@@ -4,11 +4,11 @@
     android:layout_height="wrap_content"
     android:layout_margin="8dp"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    app:cardCornerRadius="8dp">
+    app:cardCornerRadius="2dp">
 
     <FrameLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="130dp"
         >
     <RelativeLayout
         android:layout_width="match_parent"
@@ -16,7 +16,7 @@
        >
         <ImageView
             android:layout_width="match_parent"
-            android:layout_height="75dp"
+            android:layout_height="match_parent"
             android:scaleType="centerCrop"
 
             android:id="@+id/browse_recycler_image"
@@ -25,7 +25,8 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textSize="15sp"
+            android:textSize="12sp"
+            android:textStyle="bold"
             android:textColor="#fff"
 
             android:layout_marginStart="8dp"
@@ -33,11 +34,12 @@
             android:id="@+id/browse_recycler_text"
             android:text="@string/eletronic_dance"/>
     </RelativeLayout>
-    <FrameLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:background="@drawable/song_screen_gradient">
-    </FrameLayout>
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@drawable/song_screen_gradient">
+        </FrameLayout>
+
     </FrameLayout>
 
 

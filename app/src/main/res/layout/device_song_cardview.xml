@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_margin="8dp"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    app:cardCornerRadius="2dp">
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:background="#fff"
+        >
+
+
+            <ImageView
+                android:layout_width="match_parent"
+                android:layout_height="150dp"
+                android:scaleType="centerCrop"
+                android:id="@+id/device_song_album_image"
+                android:src="@drawable/normani"
+                />
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/device_song_album_name"
+            android:paddingLeft="17dp"
+            android:textStyle="bold"
+
+            android:text="Dancinf with stranger"
+            android:ellipsize="end"
+            android:maxLines="1"
+
+            android:singleLine="true"
+            android:textSize="15sp"
+
+            android:textColor="#000"
+            />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/device_song_album_artist"
+            android:text="SamSmith"
+            android:ellipsize="end"
+            android:paddingLeft="17dp"
+            android:textSize="12sp"
+            android:maxLines="1"
+            android:singleLine="true"
+            android:textColor="#000"
+            />
+
+
+
+
+
+
+
+
+
+
+
+    </LinearLayout>
+
+
+</android.support.v7.widget.CardView>

@@ -1,6 +1,6 @@
 package com.logix.symphony.Model;
 
-public class HorizontalRecylerModel {
+public class  HorizontalRecylerModel{
 
     private String mSongName;
     private String mResource;

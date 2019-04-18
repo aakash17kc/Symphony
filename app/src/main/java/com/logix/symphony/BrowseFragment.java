@@ -1,31 +1,55 @@
 package com.logix.symphony;
 
 import android.content.Context;
+import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
+import android.support.design.widget.AppBarLayout;
+import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.DefaultItemAnimator;
-import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.StaggeredGridLayoutManager;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.firestore.QuerySnapshot;
 import com.logix.symphony.Adapters.BrowseRecyclerAdapter;
 import com.logix.symphony.Model.BrowseDataModel;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 
 public class BrowseFragment extends Fragment {
 
     RecyclerView recyclerView;
     BrowseRecyclerAdapter browseRecyclerAdapter;
-    ArrayList<BrowseDataModel> list;
+    ArrayList<String> albumList = new ArrayList<>();
+
+    DocumentReference documentReference;
+    FirebaseFirestore firebaseFirestore;
+
+    ArrayList<BrowseDataModel> browseDataModelArrayList = new ArrayList<>();
+
 
 
     private OnFragmentInteractionListener mListener;
+    private ArrayList<String> mSongList;
+    private HashMap<String,String> mSongMap = new HashMap<>();
+    int counter=0;
 
     public BrowseFragment() {
         // Required empty public constructor
@@ -44,34 +68,132 @@ public class BrowseFragment extends Fragment {
         // Inflate the layout for this fragment
         View view = LayoutInflater.from(getActivity()).inflate(R.layout.fragment_browse,container,false);
 
-        recyclerView = view.findViewById(R.id.albumSongList);
+        recyclerView = view.findViewById(R.id.albumSongMap);
 
-        list = new ArrayList<>();
-        for(int i=1;i<=6;i++){
-            list.add(new BrowseDataModel(R.drawable.normani,"Sam Smith"));
-            list.add(new BrowseDataModel(R.drawable.zara,"So Good"));
+        firebaseFirestore = FirebaseFirestore.getInstance();
 
-        }
+        View onDevice = view.findViewById(R.id.onDevice);
 
-        browseRecyclerAdapter = new BrowseRecyclerAdapter(getActivity(),list);
+        onDevice.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(getActivity(),OnDeviceSongActivity.class));
+            }
+        });
+
+
+
+
+
+
+        browseRecyclerAdapter = new BrowseRecyclerAdapter(getActivity(), browseDataModelArrayList);
 
         recyclerView.setLayoutManager(new StaggeredGridLayoutManager(2,StaggeredGridLayoutManager.VERTICAL));
         recyclerView.setItemAnimator(new DefaultItemAnimator());
 
         recyclerView.setAdapter(browseRecyclerAdapter);
-      //  setData();
+        mGetData();
+
+
+
+        final CollapsingToolbarLayout collapsingToolbarLayout = (CollapsingToolbarLayout) view.findViewById(R.id.collapsinToolbar);
+        AppBarLayout appBarLayout = (AppBarLayout) view.findViewById(R.id.app_bar_layout);
+        appBarLayout.addOnOffsetChangedListener(new AppBarLayout.OnOffsetChangedListener() {
+            boolean isShow = true;
+            int scrollRange = -1;
+
+            @Override
+            public void onOffsetChanged(AppBarLayout appBarLayout, int verticalOffset) {
+                if (scrollRange == -1) {
+                    scrollRange = appBarLayout.getTotalScrollRange();
+                }
+                if (scrollRange + verticalOffset == 0) {
+                    collapsingToolbarLayout.setTitle("Browse");
+                    isShow = true;
+                } else if(isShow) {
+                    collapsingToolbarLayout.setTitle(" ");//carefull there should a space between double quote otherwise it wont work
+                    isShow = false;
+                }
+            }
+        });
+
+
 
 
         return view;
     }
 
-    private void setData() {
-        for(int i=1;i<6;i++){
-            list.add(new BrowseDataModel(R.drawable.normani,"Sam Smith"));
-            list.add(new BrowseDataModel(R.drawable.zara,"So Good"));
+    private void mGetData() {
+
+
+        firebaseFirestore.collection("AllSongs").get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                if (task.isSuccessful()) {
+                    albumList = new ArrayList<>();
+
+                    mSongList = new ArrayList<>();
+                    int i = 0;
+
+                    for (QueryDocumentSnapshot queryDocumentSnapshot : task.getResult()) {
+                        mSongList.add(String.valueOf(queryDocumentSnapshot.getId()));
+                      //  mSongList.add(queryDocumentSnapshot.getId());
+                    }
+
+
+                    mSetData(mSongList);
+                    Log.i("LIST", String.valueOf(mSongList.size()));
+
+
+                } else {
+                    Toast.makeText(getActivity(), "  " + task.getException(), Toast.LENGTH_SHORT).show();
+
+                }
+            }
+
+
+        });
+
+
+
+    }
+
+    private void mSetData(ArrayList<String> mSongList) {
+
+        for(int i = 0; i< mSongList.size(); i++){
+            mSongMap = new HashMap<>();
+            documentReference = firebaseFirestore.document("AllSongs/"+ mSongList.get(i));
+
+            Log.i("BROWSE LIST", " " + mSongList.get(i));
+
+            documentReference.get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+                @Override
+                public void onSuccess(DocumentSnapshot documentSnapshot) {
+                    Log.i("SUCCESS","DATA ADDED" +documentSnapshot.get("Artist"));
+
+                    String albumCover = (String) documentSnapshot.get("AlbumCover");
+                //    Log.i("ALBUMCOVER", albumCover);
+
+                    albumList.add(albumCover);
+                    browseDataModelArrayList.add(new BrowseDataModel(albumCover, (String) documentSnapshot.get("Artist")));
+                    browseRecyclerAdapter.notifyDataSetChanged();
+
+                    Log.i("LIST", String.valueOf(albumList));
+
+                }
+
+            });
+           // browseRecyclerAdapter.notifyDataSetChanged();
+
+
+
 
         }
-        browseRecyclerAdapter.notifyDataSetChanged();
+
+
+
+
+
     }
 
     // TODO: Rename method, update argument and hook method into UI event

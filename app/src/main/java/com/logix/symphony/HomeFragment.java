@@ -42,7 +42,7 @@ import java.util.Map;
 public class HomeFragment extends Fragment {
 
 
-    String mUserName,mUserEmail;
+    String mUserName, mUserEmail;
     Uri mUserPhotoUrl;
 
     ImageView mUserImage;
@@ -59,26 +59,26 @@ public class HomeFragment extends Fragment {
     VerticalRecyclerAdapter verticalRecyclerAdapter;
 
     ArrayList<String> mSongCat = new ArrayList<>();
-    ArrayList<String> mAlbumnames = new ArrayList<>();
-    ArrayList<String> mAlbumCoverUrl = new ArrayList<>();
 
-    HashMap<String,Object> mCategoryMap = new HashMap<>();
-    HashMap<String,Object>  temphashmap = new HashMap<>();
 
+    HashMap<String, Object> mCategoryMap = new HashMap<>();
+    HashMap<String, HashMap<String, String>> temphashmap = new HashMap<>();
+
+    HashMap<String,HashMap<String,HashMap<String,String>>>  jdbc = new HashMap<>();
 
 
     DocumentReference documentReference;
 
 
     private OnFragmentInteractionListener mListener;
-
+    private String mAlbumArtist;
 
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        View view =  inflater.inflate(R.layout.fragment_home, container, false);
+        View view = inflater.inflate(R.layout.fragment_home, container, false);
         progressBar = view.findViewById(R.id.progress_bar);
 
 
@@ -86,22 +86,22 @@ public class HomeFragment extends Fragment {
         firebaseFirestore = FirebaseFirestore.getInstance();
 
 
-
         verticalRecycler = view.findViewById(R.id.verticalRecycler);
 
-        verticalRecycler.setLayoutManager(new LinearLayoutManager(getActivity(),LinearLayoutManager.VERTICAL,false));
+        verticalRecycler.setLayoutManager(new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false));
         verticalRecycler.setHasFixedSize(true);
 
         HomeFragment homeFragment = new HomeFragment();
 
-        verticalRecyclerAdapter = new VerticalRecyclerAdapter(getActivity(), verticalList,homeFragment, new AdapterClickInterface() {
+        verticalRecyclerAdapter = new VerticalRecyclerAdapter(getActivity(), verticalList, homeFragment, new AdapterClickInterface() {
             @Override
             public void onAdapterClick(String hrm, String image) {
-                Toast.makeText(getActivity()," "+hrm,Toast.LENGTH_SHORT).show();
-                Intent intent = new Intent(getActivity(),SongListActivity.class);
+                Toast.makeText(getActivity(), " " + hrm, Toast.LENGTH_SHORT).show();
+                Intent intent = new Intent(getActivity(), SongListActivity.class);
                 Bundle bundle = new Bundle();
-                bundle.putString("AlbumName",hrm);
-                bundle.putString("Image",image);
+                bundle.putString("AlbumName", hrm);
+                bundle.putString("Image", image);
+                bundle.putInt("Interaction",00);
                 intent.putExtras(bundle);
                 startActivity(intent);
             }
@@ -111,11 +111,10 @@ public class HomeFragment extends Fragment {
         verticalRecycler.setAdapter(verticalRecyclerAdapter);
         mFetchSongCategories();
 
-        temp();
 
 
         FirebaseUser user = mAuth.getCurrentUser();
-
+       // temp();
 
 
         return view;
@@ -127,21 +126,20 @@ public class HomeFragment extends Fragment {
         firebaseFirestore.collection("Categories").get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
             @Override
             public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                if(task.isSuccessful()){
+                if (task.isSuccessful()) {
                     mSongCat = new ArrayList<>();
-                    int i=0;
+                    int i = 0;
                     Map<String, Object> hashMap;
-                    for (QueryDocumentSnapshot queryDocumentSnapshot: task.getResult()){
-                            //mSongCat.add(String.valueOf(queryDocumentSnapshot.getId()));
+                    for (QueryDocumentSnapshot queryDocumentSnapshot : task.getResult()) {
+                        //mSongCat.add(String.valueOf(queryDocumentSnapshot.getId()));
                         mSongCat.add(queryDocumentSnapshot.getId());
-                        Log.i("DATA "," categories "+mSongCat.get(i));
+                        Log.i("DATA ", " categories " + mSongCat.get(i));
                         i++;
                     }
 
                     mFetchCategoriesDetails();
-                }
-                else {
-                    Toast.makeText(getActivity(),"  "+task.getException(),Toast.LENGTH_SHORT).show();
+                } else {
+                    Toast.makeText(getActivity(), "  " + task.getException(), Toast.LENGTH_SHORT).show();
 
                 }
             }
@@ -153,10 +151,9 @@ public class HomeFragment extends Fragment {
     private void mFetchCategoriesDetails() {
 
 
-
-        for(int i=0;i<mSongCat.size();i++) {
+        for (int i = 0; i < mSongCat.size(); i++) {
             mCategoryMap = new HashMap<>();
-            documentReference = firebaseFirestore.document("Categories/"+mSongCat.get(i));
+            documentReference = firebaseFirestore.document("Categories/" + mSongCat.get(i));
 
             final int finalI = i;
             documentReference.get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
@@ -164,13 +161,13 @@ public class HomeFragment extends Fragment {
                 public void onSuccess(DocumentSnapshot documentSnapshot) {
                     mCategoryMap = (HashMap<String, Object>) documentSnapshot.getData();
                     Log.i("DATA ", String.valueOf(mCategoryMap));
-                    setData(mCategoryMap,mSongCat.get(finalI));
+                    setData(mCategoryMap, mSongCat.get(finalI));
 
                 }
             }).addOnFailureListener(new OnFailureListener() {
                 @Override
                 public void onFailure(@NonNull Exception e) {
-                    Toast.makeText(getActivity(),""+e.getMessage(),Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getActivity(), "" + e.getMessage(), Toast.LENGTH_SHORT).show();
                     Log.i("on failure ", e.getMessage());
 
                 }
@@ -180,71 +177,27 @@ public class HomeFragment extends Fragment {
 
     }
 
-    private void temp(){
-
-        documentReference = firebaseFirestore.document("AllSongs/Zara Larsson");
-        documentReference.get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
-            @Override
-            public void onSuccess(DocumentSnapshot documentSnapshot) {
-                temphashmap = (HashMap<String, Object>) documentSnapshot.getData();
-                Toast.makeText(getActivity(),"SUCCESS",Toast.LENGTH_SHORT).show();
-
-                Log.i("SUCCESS ", String.valueOf(temphashmap));
-
-            }
-        }).addOnFailureListener(new OnFailureListener() {
-            @Override
-            public void onFailure(@NonNull Exception e) {
-                Toast.makeText(getActivity(),""+e.getMessage(),Toast.LENGTH_SHORT).show();
-                Log.i("on failure ", e.getMessage());
-
-            }
-        });
 
 
 
+    private void setData(HashMap<String, Object> playlist, String playlistName) {
 
-        firebaseFirestore.collection("AllSongs").document("Zara Larsson - So Good").set(temphashmap).addOnSuccessListener(new OnSuccessListener<Void>() {
-            @Override
-            public void onSuccess(Void aVoid) {
-                Toast.makeText(getActivity(),"written",Toast.LENGTH_SHORT).show();
-                Log.i("SUCCESS WRITTEN ", String.valueOf(temphashmap));
+        ArrayList<HorizontalRecylerModel> album = new ArrayList<>();
 
-
-            }
-        }).addOnFailureListener(new OnFailureListener() {
-            @Override
-            public void onFailure(@NonNull Exception e) {
-                Toast.makeText(getActivity()," not written"+e.getMessage(),Toast.LENGTH_SHORT).show();
-                Log.i(" NOT SUCCESS WRITTEN ", String.valueOf(temphashmap));
+        Iterator hmIterator = playlist.entrySet().iterator();
+        Map.Entry mapElement;
 
 
-            }
-        });
+        while (hmIterator.hasNext()) {
+            mapElement = (Map.Entry) hmIterator.next();
+            album.add(new HorizontalRecylerModel((String) mapElement.getKey(), (String) mapElement.getValue()));
 
 
-    }
+        }
 
 
-
-    private void setData(HashMap<String,Object> playlist,String playlistName) {
-
-            ArrayList<HorizontalRecylerModel> album = new ArrayList<>();
-
-            Iterator hmIterator = playlist.entrySet().iterator();
-            Map.Entry mapElement ;
-
-
-            while (hmIterator.hasNext()){
-                mapElement = (Map.Entry) hmIterator.next();
-                album.add(new HorizontalRecylerModel((String) mapElement.getKey(), (String) mapElement.getValue()));
-
-
-            }
-
-
-            VerticalRecyclerModel vrm = new VerticalRecyclerModel(playlistName,album);
-            verticalList.add(vrm);
+        VerticalRecyclerModel vrm = new VerticalRecyclerModel(playlistName, album);
+        verticalList.add(vrm);
 
 
         verticalRecyclerAdapter.notifyDataSetChanged();
@@ -277,10 +230,82 @@ public class HomeFragment extends Fragment {
     }
 
 
-
-
     public interface OnFragmentInteractionListener {
         // TODO: Update argument type and name
         void onFragmentInteraction(Uri uri);
     }
+
+
+   /* private void temp() {
+
+        documentReference = firebaseFirestore.document("AllSongs/Zara Larsson");
+        documentReference.get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+            @Override
+            public void onSuccess(DocumentSnapshot documentSnapshot) {
+                temphashmap = (HashMap<String, HashMap<String, String>>) documentSnapshot.get("SongList");
+                Toast.makeText(getActivity(), "SUCCESS", Toast.LENGTH_SHORT).show();
+
+                Log.i("SUCCESS ", String.valueOf(temphashmap));
+
+                jdbc.put("SongList",temphashmap);
+
+                firebaseFirestore.collection("AllSongs").document("Zara Larsson - So Good").set(jdbc).addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void aVoid) {
+                        Toast.makeText(getActivity(),"written",Toast.LENGTH_SHORT).show();
+                        Log.i("SUCCESS WRITTEN ", String.valueOf(temphashmap));
+
+
+                    }
+                });
+
+
+            }
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                Toast.makeText(getActivity(), "" + e.getMessage(), Toast.LENGTH_SHORT).show();
+                Log.i("on failure ", e.getMessage());
+
+            }
+        });
+    }*/
+
+
+
+    /*@Override
+    public void onStart() {
+        super.onStart();
+        firebaseFirestore.collection("Categories").get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                if (task.isSuccessful()) {
+                    mSongCat = new ArrayList<>();
+                    int i = 0;
+                    Map<String, Object> hashMap;
+                    for (QueryDocumentSnapshot queryDocumentSnapshot : task.getResult()) {
+                        //mSongCat.add(String.valueOf(queryDocumentSnapshot.getId()));
+                        mSongCat.add(queryDocumentSnapshot.getId());
+                        Log.i("DATA ", " categories " + mSongCat.get(i));
+                        i++;
+                    }
+
+                }
+            }
+        });
+
+        for (int i = 0; i < mSongCat.size(); i++) {
+            mCategoryMap = new HashMap<>();
+            documentReference = firebaseFirestore.document("Categories/" + mSongCat.get(i));
+
+            final int finalI = i;
+            documentReference.addSnapshotListener(new EventListener<DocumentSnapshot>() {
+                @Override
+                public void onEvent(@Nullable DocumentSnapshot documentSnapshot, @Nullable FirebaseFirestoreException e) {
+                    setData(mCategoryMap, mSongCat.get(finalI));
+                }
+            });
+
+        }*/
+
 }

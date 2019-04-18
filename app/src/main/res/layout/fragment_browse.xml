@@ -6,6 +6,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     tools:context=".SongListActivity"
+    android:background="@drawable/fragment_background"
     xmlns:fab="http://schemas.android.com/tools">
     <android.support.design.widget.AppBarLayout
         android:layout_width="match_parent"
@@ -22,6 +23,8 @@
             app:expandedTitleMarginEnd="56dp"
             android:id="@+id/collapsinToolbar"
             android:fitsSystemWindows="true"
+            app:title="Browse"
+            android:background="@android:color/transparent"
             >
 
 
@@ -38,13 +41,7 @@
                     android:contentInsetRight="0dp"
                     android:contentInsetEnd="0dp"
                     app:popupTheme="@style/ThemeOverlay.AppCompat.Light">
-                    <TextView
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:text="@string/browse"
-                        android:gravity="center"
-                        android:textSize="25dp"
-                        android:textStyle="bold"/>
+
          </android.support.v7.widget.Toolbar>
             <include layout="@layout/browse_toolbar_layout"
                 android:layout_width="match_parent"
@@ -88,7 +85,7 @@
             <android.support.v7.widget.RecyclerView
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:id="@+id/albumSongList"
+                android:id="@+id/albumSongMap"
                 android:layout_below="@id/moods"
                 app:layout_behavior="@string/appbar_scrolling_view_behavior"
 

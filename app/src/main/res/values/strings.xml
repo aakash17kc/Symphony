@@ -65,5 +65,6 @@
     <string name="_12s">12s</string>
     <string name="normalize_volume">Normalize Volume</string>
     <string name="single_line_text_view_twidget">Single-line text view twidget</string>
+    <string name="action_settings">Settings</string>
 
 </resources>

@@ -6,19 +6,19 @@
     
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="50dp"
+        android:layout_height="45dp"
         android:layout_margin="3dp"
        >
         <ImageView
             android:layout_width="0dp"
             android:layout_height="match_parent"
-            android:layout_weight="0.15"
+            android:layout_weight="0.12"
             android:src="@drawable/google"/>
         <TextView
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
-            android:textSize="18sp"
+            style="@style/AppTheme.MyMusicTextStyle"
             android:paddingStart="25dp"
             android:paddingEnd="0dp"
             android:gravity="center_vertical"
@@ -32,20 +32,23 @@
     </LinearLayout>
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="50dp"
+        android:layout_height="45dp"
         android:layout_margin="3dp"
         >
         <ImageView
             android:layout_width="0dp"
             android:layout_height="match_parent"
-            android:layout_weight="0.15"
+            android:layout_weight="0.12"
+
             android:src="@drawable/google"/>
         <TextView
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
-            android:textSize="18sp"
+
             android:paddingStart="25dp"
+            style="@style/AppTheme.MyMusicTextStyle"
+
             android:paddingEnd="0dp"
             android:gravity="center_vertical"
             android:text="@string/playlists"/>
@@ -58,13 +61,14 @@
     </LinearLayout>
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="50dp"
+        android:layout_height="45dp"
         android:layout_margin="3dp"
         >
         <ImageView
             android:layout_width="0dp"
             android:layout_height="match_parent"
-            android:layout_weight="0.15"
+            android:layout_weight="0.12"
+
             android:src="@drawable/google"/>
         <TextView
             android:layout_width="0dp"
@@ -73,7 +77,8 @@
             android:paddingStart="25dp"
             android:paddingEnd="0dp"
             android:gravity="center_vertical"
-            android:textSize="18sp"
+            style="@style/AppTheme.MyMusicTextStyle"
+
             android:text="@string/downloaded"/>
         <ImageView
             android:layout_width="0dp"
@@ -84,13 +89,15 @@
     </LinearLayout>
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="50dp"
+        android:layout_height="45dp"
         android:layout_margin="3dp"
+        android:id="@+id/onDevice"
         >
         <ImageView
             android:layout_width="0dp"
             android:layout_height="match_parent"
-            android:layout_weight="0.15"
+            android:layout_weight="0.12"
+
             android:src="@drawable/google"/>
         <TextView
             android:layout_width="0dp"
@@ -99,7 +106,8 @@
             android:paddingStart="25dp"
             android:paddingEnd="0dp"
             android:gravity="center_vertical"
-            android:textSize="18sp"
+            style="@style/AppTheme.MyMusicTextStyle"
+
             android:text="@string/on_device"/>
         <ImageView
             android:layout_width="0dp"
@@ -110,22 +118,24 @@
     </LinearLayout>
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="50dp"
+        android:layout_height="45dp"
         android:layout_margin="3dp"
         >
         <ImageView
             android:layout_width="0dp"
             android:layout_height="match_parent"
-            android:layout_weight="0.15"
-            android:src="@drawable/google"/>
+            android:layout_weight="0.12"
+
+            android:src="@drawable/messenger_bubble_small_blue"
+            android:scaleType="fitCenter"/>
         <TextView
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
             android:paddingStart="25dp"
             android:paddingEnd="0dp"
+            style="@style/AppTheme.MyMusicTextStyle"
             android:gravity="center_vertical"
-            android:textSize="18sp"
             android:text="@string/Radio"/>
         <ImageView
             android:layout_width="0dp"
