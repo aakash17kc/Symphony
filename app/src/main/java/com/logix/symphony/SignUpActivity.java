@@ -36,6 +36,7 @@ public class SignUpActivity extends AppCompatActivity implements View.OnClickLis
     private FirebaseAuth mAuth;
     CallbackManager callbackManager;
     Button mFacebookLogin;
+    Button mEmailSignIn;
     GoogleSignInClient mGoogleSignInClient;
     private static final String EMAIL = "email";
 
@@ -49,6 +50,10 @@ public class SignUpActivity extends AppCompatActivity implements View.OnClickLis
         mAuth = FirebaseAuth.getInstance();
 
         mGoogleLogin.setOnClickListener(this);
+
+        mEmailSignIn = findViewById(R.id.login);
+
+        mEmailSignIn.setOnClickListener(this);
     }
 
 
@@ -63,7 +68,12 @@ public class SignUpActivity extends AppCompatActivity implements View.OnClickLis
                         .build();
                 mGoogleSignInClient = GoogleSignIn.getClient(this, gso);
                 signIn();
+                break;
+            case R.id.login:
+                startActivity(new Intent(SignUpActivity.this,LoginActivity.class));
         }
+
+
 
     }
 
@@ -101,6 +111,7 @@ public class SignUpActivity extends AppCompatActivity implements View.OnClickLis
                         if (task.isSuccessful()) {
                             // Sign in success, update UI with the signed-in user's information
                             Log.d(TAG, "signInWithCredential:success");
+                            Toast.makeText(SignUpActivity.this,"Google Sing In Sucessful",Toast.LENGTH_SHORT).show();
                             FirebaseUser user = mAuth.getCurrentUser();
                             updateUI(user);
                         } else {

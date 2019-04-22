@@ -9,9 +9,6 @@ import com.google.gson.reflect.TypeToken;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 
-/**
- * Created by Valdio Veliu on 16-07-30.
- */
 public class StorageUtil {
 
     private final String STORAGE = " com.logix.symphony.STORAGE";

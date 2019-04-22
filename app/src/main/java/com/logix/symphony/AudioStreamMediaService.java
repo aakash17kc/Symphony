@@ -1,7 +1,7 @@
 package com.logix.symphony;
 
-import android.app.NotificationManager;
 import android.app.PendingIntent;
+import android.app.ProgressDialog;
 import android.app.Service;
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -13,7 +13,6 @@ import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.media.session.MediaSessionManager;
 import android.os.Binder;
-import android.os.Handler;
 import android.os.IBinder;
 import android.os.RemoteException;
 import android.support.v4.app.NotificationCompat;
@@ -25,65 +24,68 @@ import android.support.v4.media.app.NotificationCompat.MediaStyle;
 import android.telephony.PhoneStateListener;
 import android.telephony.TelephonyManager;
 import android.util.Log;
+import android.widget.ProgressBar;
 
 import java.io.IOException;
 import java.util.ArrayList;
 
-public class MediaPlayerService extends Service implements MediaPlayer.OnCompletionListener,
+
+public class AudioStreamMediaService extends Service  implements MediaPlayer.OnCompletionListener,
         MediaPlayer.OnPreparedListener, MediaPlayer.OnErrorListener, MediaPlayer.OnSeekCompleteListener,
         MediaPlayer.OnInfoListener, MediaPlayer.OnBufferingUpdateListener,
 
         AudioManager.OnAudioFocusChangeListener {
-    public static final String ACTION_PLAY = "com.logix.symphony.ACTION_PLAY";
-    public static final String ACTION_PAUSE = "com.logix.symphony.ACTION_PAUSE";
-    public static final String ACTION_PREVIOUS = "com.logix.symphony.ACTION_PREVIOUS";
-    public static final String ACTION_NEXT = "com.logix.symphony.ACTION_NEXT";
-    public static final String ACTION_STOP = "com.logix.symphony.ACTION_STOP";
-    public static String mAlbumImage ="";
+public static final String ACTION_PLAY = "com.logix.symphony.ACTION_PLAY";
+public static final String ACTION_PAUSE = "com.logix.symphony.ACTION_PAUSE";
+public static final String ACTION_PREVIOUS = "com.logix.symphony.ACTION_PREVIOUS";
+public static final String ACTION_NEXT = "com.logix.symphony.ACTION_NEXT";
+public static final String ACTION_STOP = "com.logix.symphony.ACTION_STOP";
+public  String mAlbumImage ="";
 
-    private MediaPlayer mediaPlayer;
-
-    //MediaSession
-    private MediaSessionManager mediaSessionManager;
-    private MediaSessionCompat mediaSession;
-    private MediaControllerCompat.TransportControls transportControls;
-
-    //AudioPlayer notification ID
-    private static final int NOTIFICATION_ID = 101;
-
-    NotificationManagerCompat notificationManager ;
-    //Used to pause/resume MediaPlayer
-    private int resumePosition;
-
-    //AudioFocus
-    private AudioManager audioManager;
-
-    // Binder given to clients
-    private final IBinder iBinder = new LocalBinder();
-
-    //List of available Audio files
-    private ArrayList<Audio> audioList ;
-    private int audioIndex = -1,currentIndex=-1;
-    private Audio activeAudio; //an object on the currently playing audio
+private MediaPlayer mediaPlayer;
 
 
-    //Handle incoming phone calls
-    private boolean ongoingCall = false;
-    private PhoneStateListener phoneStateListener;
-    private TelephonyManager telephonyManager;
+//MediaSession
+private MediaSessionManager mediaSessionManager;
+private MediaSessionCompat mediaSession;
+private MediaControllerCompat.TransportControls transportControls;
+
+//AudioPlayer notification ID
+private static final int NOTIFICATION_ID = 101;
+
+        NotificationManagerCompat notificationManager ;
+//Used to pause/resume MediaPlayer
+private int resumePosition;
+
+//AudioFocus
+private AudioManager audioManager;
+
+// Binder given to clients
+private final IBinder iBinder = new LocalBinder();
+
+//List of available Audio files
+private ArrayList<Audio> audioList ;
+private int audioIndex = -1,currentIndex=-1;
+private Audio activeAudio; //an object on the currently playing audio
 
 
-    public MediaPlayerService() {
-    }
+//Handle incoming phone calls
+private boolean ongoingCall = false;
+private PhoneStateListener phoneStateListener;
+private TelephonyManager telephonyManager;
 
-    @Override
-    public IBinder onBind(Intent intent) {
+
+public AudioStreamMediaService() {
+        }
+
+@Override
+public IBinder onBind(Intent intent) {
         // TODO: Return the communication channel to the service.
         return iBinder;
-    }
+        }
 
-    @Override
-    public void onCreate() {
+@Override
+public void onCreate() {
         super.onCreate();
         // Perform one-time setup procedures
 
@@ -100,73 +102,73 @@ public class MediaPlayerService extends Service implements MediaPlayer.OnComplet
         registerBecomingNoisyReceiver();
         //Listen for new Audio to play -- BroadcastReceiver
         register_playNewAudio();
-    }
+        }
 
-    @Override
-    public int onStartCommand(Intent intent, int flags, int startId) {
+@Override
+public int onStartCommand(Intent intent, int flags, int startId) {
         try {
 
-            //Load data from SharedPreferences
-            StorageUtil storage = new StorageUtil(getApplicationContext());
-            audioList = storage.loadAudio();
-            audioIndex = storage.loadAudioIndex();
-            currentIndex = audioIndex;
+        //Load data from SharedPreferences
+        StorageUtil storage = new StorageUtil(getApplicationContext());
+        audioList = storage.loadAudio();
+        audioIndex = storage.loadAudioIndex();
+        currentIndex = audioIndex;
 
-            notificationManager = NotificationManagerCompat.from(this);
+        notificationManager = NotificationManagerCompat.from(this);
 
-            mAlbumImage = intent.getStringExtra("AlbumImage");
+        mAlbumImage = intent.getStringExtra("AlbumImage");
 
-            if (audioIndex != -1 && audioIndex < audioList.size()) {
-                //index is in a valid range
-                activeAudio = audioList.get(audioIndex);
-            } else {
-                stopSelf();
-            }
+        if (audioIndex != -1 && audioIndex < audioList.size()) {
+        //index is in a valid range
+        activeAudio = audioList.get(audioIndex);
+        } else {
+        stopSelf();
+        }
         } catch (NullPointerException e) {
-            stopSelf();
+        stopSelf();
         }
 
         //Request audio focus
         if (requestAudioFocus() == false) {
-            //Could not gain focus
-            stopSelf();
+        //Could not gain focus
+        stopSelf();
         }
 
         if (mediaSessionManager == null) {
-            try {
-                initMediaSession();
-                initMediaPlayer();
-            } catch (RemoteException e) {
-                e.printStackTrace();
-                stopSelf();
-            }
-            buildNotification(PlaybackStatus.PLAYING);
+        try {
+        initMediaSession();
+        initMediaPlayer();
+        } catch (RemoteException e) {
+        e.printStackTrace();
+        stopSelf();
+        }
+        buildNotification(PlaybackStatus.PLAYING);
         }
 
         //Handle Intent action from MediaSession.TransportControls
         handleIncomingActions(intent);
         return super.onStartCommand(intent, flags, startId);
-    }
+        }
 
-    @Override
-    public boolean onUnbind(Intent intent) {
+@Override
+public boolean onUnbind(Intent intent) {
         mediaSession.release();
         removeNotification();
         return super.onUnbind(intent);
-    }
+        }
 
-    @Override
-    public void onDestroy() {
+@Override
+public void onDestroy() {
         super.onDestroy();
         if (mediaPlayer != null) {
-            removeNotification();
-            stopMedia();
-            mediaPlayer.release();
+        removeNotification();
+        stopMedia();
+        mediaPlayer.release();
         }
         removeAudioFocus();
         //Disable the PhoneStateListener
         if (phoneStateListener != null) {
-            telephonyManager.listen(phoneStateListener, PhoneStateListener.LISTEN_NONE);
+        telephonyManager.listen(phoneStateListener, PhoneStateListener.LISTEN_NONE);
         }
 
 
@@ -176,65 +178,65 @@ public class MediaPlayerService extends Service implements MediaPlayer.OnComplet
 
         //clear cached playlist
         new StorageUtil(getApplicationContext()).clearCachedAudioPlaylist();
-    }
+        }
 
 
 
-    @Override
-    public void onBufferingUpdate(MediaPlayer mp, int percent) {
+@Override
+public void onBufferingUpdate(MediaPlayer mp, int percent) {
 
-    }
+        }
 
-    @Override
-    public void onCompletion(MediaPlayer mp) {
+@Override
+public void onCompletion(MediaPlayer mp) {
         //Invoked when playback of a media source has completed.
         //  stopMedia();
         skipToNext();
         buildNotification(PlaybackStatus.PLAYING);
-    }
+        }
 
-    @Override
-    public boolean onError(MediaPlayer mp, int what, int extra) {
+@Override
+public boolean onError(MediaPlayer mp, int what, int extra) {
         //Invoked when there has been an error during an asynchronous operation
         switch (what) {
-            case MediaPlayer.MEDIA_ERROR_NOT_VALID_FOR_PROGRESSIVE_PLAYBACK:
-                Log.d("MediaPlayer Error", "MEDIA ERROR NOT VALID FOR PROGRESSIVE PLAYBACK " + extra);
-                break;
-            case MediaPlayer.MEDIA_ERROR_SERVER_DIED:
-                Log.d("MediaPlayer Error", "MEDIA ERROR SERVER DIED " + extra);
-                break;
-            case MediaPlayer.MEDIA_ERROR_UNKNOWN:
-                Log.d("MediaPlayer Error", "MEDIA ERROR UNKNOWN " + extra);
-                break;
+        case MediaPlayer.MEDIA_ERROR_NOT_VALID_FOR_PROGRESSIVE_PLAYBACK:
+        Log.d("MediaPlayer Error", "MEDIA ERROR NOT VALID FOR PROGRESSIVE PLAYBACK " + extra);
+        break;
+        case MediaPlayer.MEDIA_ERROR_SERVER_DIED:
+        Log.d("MediaPlayer Error", "MEDIA ERROR SERVER DIED " + extra);
+        break;
+        case MediaPlayer.MEDIA_ERROR_UNKNOWN:
+        Log.d("MediaPlayer Error", "MEDIA ERROR UNKNOWN " + extra);
+        break;
         }
         return false;
-    }
+        }
 
-    @Override
-    public boolean onInfo(MediaPlayer mp, int what, int extra) {
+@Override
+public boolean onInfo(MediaPlayer mp, int what, int extra) {
         return false;
-    }
+        }
 
-    @Override
-    public void onPrepared(MediaPlayer mp) {
+@Override
+public void onPrepared(MediaPlayer mp) {
         //Invoked when the media source is ready for playback.
         playMedia();
-    }
+        }
 
-    @Override
-    public void onSeekComplete(MediaPlayer mp) {
+@Override
+public void onSeekComplete(MediaPlayer mp) {
         //Invoked indicating the completion of a seek operation.
 
-    }
-
-
-
-    public class LocalBinder extends Binder {
-        public MediaPlayerService getService() {
-            // Return this instance of LocalService so clients can call public methods
-            return MediaPlayerService.this;
         }
+
+
+
+public class LocalBinder extends Binder {
+    public AudioStreamMediaService getService() {
+        // Return this instance of LocalService so clients can call public methods
+        return AudioStreamMediaService.this;
     }
+}
 
 
     @Override
@@ -574,13 +576,13 @@ public class MediaPlayerService extends Service implements MediaPlayer.OnComplet
                 .addAction(notificationAction, "pause", play_pauseAction)
                 .addAction(android.R.drawable.ic_media_next, "next", playbackAction(2));
 
-            notificationManager.notify(NOTIFICATION_ID,notificationBuilder.build());
-      // ((NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE)).notify(NOTIFICATION_ID, notificationBuilder.build());
+        notificationManager.notify(NOTIFICATION_ID,notificationBuilder.build());
+        // ((NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE)).notify(NOTIFICATION_ID, notificationBuilder.build());
     }
 
 
     private PendingIntent playbackAction(int actionNumber) {
-        Intent playbackAction = new Intent(this, MediaPlayerService.class);
+        Intent playbackAction = new Intent(this, AudioStreamMediaService.class);
         switch (actionNumber) {
             case 0:
                 // Play

@@ -62,16 +62,18 @@ public class SongListActivity extends AppCompatActivity {
     String mAlbumArtist;
 
 
-    boolean serviceBound = false;
+    boolean audioserviceBound = false;
+    boolean bufferaudioserviceBound = false;
 
 
     String albumName;
     String imagepath;
     ArrayList<Audio> audioList;
 
-    private MediaPlayerService player;
-
-
+    private MediaPlayerService audioplayer;
+    private AudioStreamMediaService bufferAudioplayer;
+    Intent audioplayerIntent ;
+    Intent bufferplayerIntent;
     int mMode = 0;
     
     
@@ -90,7 +92,8 @@ public class SongListActivity extends AppCompatActivity {
 
         firebaseFirestore = FirebaseFirestore.getInstance();
 
-
+        audioplayerIntent = new Intent(this, MediaPlayerService.class);
+         bufferplayerIntent = new Intent(this,AudioStreamMediaService.class);
 
 
 
@@ -108,6 +111,7 @@ public class SongListActivity extends AppCompatActivity {
         if(mMode==00) {
 
             mFetchAlbumSongs();
+           // initRecyclerView();
         }else if(mMode==01){
             loadAudio(albumName);
             initRecyclerView();
@@ -137,16 +141,46 @@ public class SongListActivity extends AppCompatActivity {
 
     private void playAudio(int audioIndex) {
         //Check is service is active
-        if (!serviceBound) {
+        if (!audioserviceBound) {
+            if(bufferaudioserviceBound){
+                stopService(bufferplayerIntent);
+            }
             //Store Serializable audioList to SharedPreferences
             StorageUtil storage = new StorageUtil(getApplicationContext());
             storage.storeAudio(audioList);
             storage.storeAudioIndex(audioIndex);
 
-            Intent playerIntent = new Intent(this, MediaPlayerService.class);
-            playerIntent.putExtra("AlbumImage",imagepath);
-            startService(playerIntent);
-            bindService(playerIntent, serviceConnection, Context.BIND_AUTO_CREATE);
+            audioplayerIntent = new Intent(this, MediaPlayerService.class);
+            audioplayerIntent.putExtra("AlbumImage",imagepath);
+            startService(audioplayerIntent);
+            bindService(audioplayerIntent, audioserviceConnection, Context.BIND_AUTO_CREATE);
+        } else {
+            //Store the new audioIndex to SharedPreferences
+            StorageUtil storage = new StorageUtil(getApplicationContext());
+            storage.storeAudioIndex(audioIndex);
+
+            //Service is active
+            //Send a broadcast to the service -> PLAY_NEW_AUDIO
+            Intent broadcastIntent = new Intent(Broadcast_PLAY_NEW_AUDIO);
+            broadcastIntent.putExtra("AlbumImage",imagepath);
+            sendBroadcast(broadcastIntent);
+        }
+    }
+
+    private void bufferAudio(int audioIndex){
+        //Check is service is active
+        if (!bufferaudioserviceBound) {
+           if(audioserviceBound){
+               stopService(audioplayerIntent);
+           }
+            //Store Serializable audioList to SharedPreferences
+            StorageUtil storage = new StorageUtil(getApplicationContext());
+            storage.storeAudio(audioList);
+            storage.storeAudioIndex(audioIndex);
+
+            bufferplayerIntent.putExtra("AlbumImage",imagepath);
+            startService(bufferplayerIntent);
+            bindService(bufferplayerIntent, bufferServiceConnection, Context.BIND_AUTO_CREATE);
         } else {
             //Store the new audioIndex to SharedPreferences
             StorageUtil storage = new StorageUtil(getApplicationContext());
@@ -185,7 +219,7 @@ public class SongListActivity extends AppCompatActivity {
 
                 audioList.add(new Audio(data, title, album, artist));
 
-                mSongList.add(new SongListClass(title,artist,imagepath));
+                mSongList.add(new SongListClass(title,artist,imagepath,""));
             }
         }
         cursor.close();
@@ -245,6 +279,7 @@ public class SongListActivity extends AppCompatActivity {
 
 
     private void mPopulateSongList() {
+        audioList = new ArrayList<>();
 
         Iterator<Map.Entry<String, HashMap<String, String>>> songListParent = mAlbumSongMap.entrySet().iterator();
 
@@ -254,12 +289,63 @@ public class SongListActivity extends AppCompatActivity {
             Iterator<Map.Entry<String, String>> child = (parentPair.getValue()).entrySet().iterator();
 
             //Log.i("CHECK THE CHILD",child.next().getValue());
+            String artist = "";
+            String songName = parentPair.getKey();
 
-            if ((child.hasNext())){
+
+            while ((child.hasNext())){
                 Map.Entry childPair = child.next();
-                list.add(new SongListClass(parentPair.getKey(), (String) childPair.getValue(),imagepath));
-                 child.remove();
+                String songurl = " ";
+               // Log.i("TYPE",c)
+
+                if(childPair.getKey().equals("Artist")){
+                    list.add(new SongListClass(parentPair.getKey(), (String) childPair.getValue(),imagepath,""));
+                    artist = childPair.getValue().toString();
+
+                }
+                if(childPair.getKey().equals("SongUrl")){
+                    songurl = (String) childPair.getValue();
+                    audioList.add(new Audio(songurl, songName, albumName, artist));
+                    Log.i("SONGLIST", ""+songName+" : "+songurl);
+
+
+                }
+
+                //list.add(new SongListClass(parentPair.getKey(), (String) childPair.getValue(),imagepath,""));
+                 /*if(childPair.getKey().equals("Artist") && child.hasNext()){
+                     list.add(new SongListClass(parentPair.getKey(), (String) childPair.getValue(),imagepath,""));
+
+                     childPair = child.next();
+                   songurl = (String) childPair.getValue();
+                     audioList.add(new Audio(songurl, songName, albumName, artistName));
+                 }
+                 else if (childPair.getKey().equals("SongUrl")){
+                     songurl = (String) childPair.getValue();
+                     audioList.add(new Audio(songurl, songName, albumName, artistName));
+                 }*/
             }
+          /*  String songName = parentPair.getKey();
+            String artistName = "";
+            String songurl = " ";
+
+            while (child.hasNext()){
+                Map.Entry childPair = child.next();
+                String key = (String) childPair.getKey();
+                String value = (String) childPair.getValue();
+
+                if(key.equals("Artist")){
+                    artistName = (String) childPair.getValue();
+                    songurl = " ";
+                    list.add(new SongListClass(parentPair.getKey(), value,imagepath,""));
+                }
+                else  if (key.equals("SongUrl")){
+                    songurl = value;
+                    audioList.add(new Audio(songurl, songName, albumName, artistName));
+
+                }
+
+            }*/
+
 
         }
 
@@ -267,6 +353,12 @@ public class SongListActivity extends AppCompatActivity {
         SongListAdapter songListAdapter = new SongListAdapter(this,list);
 
         songListView.setAdapter(songListAdapter);
+        songListView.addOnItemTouchListener(new RecyclerItemTouchListener(this, new onItemClickListener() {
+            @Override
+            public void onClick(View view, int index) {
+                bufferAudio(index);
+            }
+        }));
 
 
     }
@@ -299,30 +391,50 @@ public class SongListActivity extends AppCompatActivity {
     @Override
     public void onSaveInstanceState(Bundle outState, PersistableBundle outPersistentState) {
         super.onSaveInstanceState(outState, outPersistentState);
-        outState.putBoolean("serviceStatus", serviceBound);
+        outState.putBoolean("serviceStatus", audioserviceBound);
     }
 
     @Override
     protected void onRestoreInstanceState(Bundle savedInstanceState) {
         super.onRestoreInstanceState(savedInstanceState);
-        serviceBound = savedInstanceState.getBoolean("serviceStatus");
+        audioserviceBound = savedInstanceState.getBoolean("serviceStatus");
     }
 
     //Binding this Client to the AudioPlayer Service
-    private ServiceConnection serviceConnection = new ServiceConnection() {
+    private ServiceConnection audioserviceConnection = new ServiceConnection() {
         @Override
         public void onServiceConnected(ComponentName name, IBinder service) {
             // We've bound to LocalService, cast the IBinder and get LocalService instance
             MediaPlayerService.LocalBinder binder = (MediaPlayerService.LocalBinder) service;
-            player = binder.getService();
-            serviceBound = true;
+            audioplayer = binder.getService();
+            audioserviceBound = true;
+        }
+
+
+
+        @Override
+        public void onServiceDisconnected(ComponentName name) {
+            audioserviceBound = false;
+        }
+    };
+
+    private ServiceConnection bufferServiceConnection  = new ServiceConnection() {
+        @Override
+        public void onServiceConnected(ComponentName name, IBinder service) {
+            AudioStreamMediaService.LocalBinder binder = (AudioStreamMediaService.LocalBinder) service;
+            bufferAudioplayer = binder.getService();
+            bufferaudioserviceBound =true;
+
         }
 
         @Override
         public void onServiceDisconnected(ComponentName name) {
-            serviceBound = false;
+            bufferaudioserviceBound = false;
+
         }
     };
+
+
 
 
 }

@@ -19,9 +19,13 @@
         android:supportsRtl="true"
         android:theme="@style/FullscreenTheme">
         <service
-            android:name=".MediaPlayerService"
+            android:name=".AudioStreamMediaService"
             android:enabled="true"
             android:exported="true"></service>
+        <service
+            android:name=".MediaPlayerService"
+            android:enabled="true"
+            android:exported="true" />
 
         <activity android:name=".OnDeviceSongActivity" />
         <activity android:name=".SongListActivity" />
