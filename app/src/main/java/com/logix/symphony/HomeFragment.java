@@ -239,7 +239,7 @@ public class HomeFragment extends Fragment {
    /* private void temp() {
 
         documentReference = firebaseFirestore.document("AllSongs/Zara Larsson");
-        documentReference.get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+        documentReference.get().addOnSuccessListener(new_releases OnSuccessListener<DocumentSnapshot>() {
             @Override
             public void onSuccess(DocumentSnapshot documentSnapshot) {
                 temphashmap = (HashMap<String, HashMap<String, String>>) documentSnapshot.get("SongList");
@@ -249,7 +249,7 @@ public class HomeFragment extends Fragment {
 
                 jdbc.put("SongList",temphashmap);
 
-                firebaseFirestore.collection("AllSongs").document("Zara Larsson - So Good").set(jdbc).addOnSuccessListener(new OnSuccessListener<Void>() {
+                firebaseFirestore.collection("AllSongs").document("Zara Larsson - So Good").set(jdbc).addOnSuccessListener(new_releases OnSuccessListener<Void>() {
                     @Override
                     public void onSuccess(Void aVoid) {
                         Toast.makeText(getActivity(),"written",Toast.LENGTH_SHORT).show();
@@ -261,7 +261,7 @@ public class HomeFragment extends Fragment {
 
 
             }
-        }).addOnFailureListener(new OnFailureListener() {
+        }).addOnFailureListener(new_releases OnFailureListener() {
             @Override
             public void onFailure(@NonNull Exception e) {
                 Toast.makeText(getActivity(), "" + e.getMessage(), Toast.LENGTH_SHORT).show();
@@ -276,11 +276,11 @@ public class HomeFragment extends Fragment {
     /*@Override
     public void onStart() {
         super.onStart();
-        firebaseFirestore.collection("Categories").get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+        firebaseFirestore.collection("Categories").get().addOnCompleteListener(new_releases OnCompleteListener<QuerySnapshot>() {
             @Override
             public void onComplete(@NonNull Task<QuerySnapshot> task) {
                 if (task.isSuccessful()) {
-                    mSongCat = new ArrayList<>();
+                    mSongCat = new_releases ArrayList<>();
                     int i = 0;
                     Map<String, Object> hashMap;
                     for (QueryDocumentSnapshot queryDocumentSnapshot : task.getResult()) {
@@ -295,11 +295,11 @@ public class HomeFragment extends Fragment {
         });
 
         for (int i = 0; i < mSongCat.size(); i++) {
-            mCategoryMap = new HashMap<>();
+            mCategoryMap = new_releases HashMap<>();
             documentReference = firebaseFirestore.document("Categories/" + mSongCat.get(i));
 
             final int finalI = i;
-            documentReference.addSnapshotListener(new EventListener<DocumentSnapshot>() {
+            documentReference.addSnapshotListener(new_releases EventListener<DocumentSnapshot>() {
                 @Override
                 public void onEvent(@Nullable DocumentSnapshot documentSnapshot, @Nullable FirebaseFirestoreException e) {
                     setData(mCategoryMap, mSongCat.get(finalI));

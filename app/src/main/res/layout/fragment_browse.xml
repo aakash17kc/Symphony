@@ -1,103 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<android.support.design.widget.CoordinatorLayout android:layout_width="match_parent"
+<LinearLayout android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     tools:context=".SongListActivity"
-    android:background="@drawable/fragment_background"
     xmlns:fab="http://schemas.android.com/tools">
-    <android.support.design.widget.AppBarLayout
-        android:layout_width="match_parent"
-        android:layout_height="380dp"
-        android:id="@+id/app_bar_layout"
-        android:background="@android:color/transparent"
-        android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar">
-        <android.support.design.widget.CollapsingToolbarLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            app:layout_scrollFlags="exitUntilCollapsed|scroll"
-            app:contentScrim="?attr/colorPrimary"
-            app:expandedTitleMarginStart="56dp"
-            app:expandedTitleMarginEnd="56dp"
-            android:id="@+id/collapsinToolbar"
-            android:fitsSystemWindows="true"
-            app:title="Browse"
-            android:background="@android:color/transparent"
-            >
 
-
-           <RelativeLayout
-               android:layout_width="match_parent"
-               android:layout_height="wrap_content">
-                <android.support.v7.widget.Toolbar
-                    android:id="@+id/toolbar"
-                    android:layout_width="match_parent"
-                    android:layout_height="56dp"
-                    app:layout_collapseMode="pin"
-                    app:contentInsetLeft="0dp"
-                    app:contentInsetStart="0dp"
-                    android:contentInsetRight="0dp"
-                    android:contentInsetEnd="0dp"
-                    app:popupTheme="@style/ThemeOverlay.AppCompat.Light">
-
-         </android.support.v7.widget.Toolbar>
-            <include layout="@layout/browse_toolbar_layout"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_below="@id/toolbar"
-                android:layout_marginTop="20dp"
-                />
-           </RelativeLayout>
-        </android.support.design.widget.CollapsingToolbarLayout>
-
-    </android.support.design.widget.AppBarLayout>
-
-    <android.support.v4.widget.NestedScrollView
+    <include layout="@layout/browse_layout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        app:layout_anchor="@+id/app_bar_layout"
-        app:layout_anchorGravity="top|center"
-        android:clipToPadding="false"
-        android:id="@+id/nestedScrollView"
-        app:layout_behavior="@string/appbar_scrolling_view_behavior"
-        >
+        />
 
 
-
-
-
-
-        <RelativeLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content">
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:textSize="20sp"
-                android:id="@+id/moods"
-                android:gravity="center"
-                android:layout_margin="5dp"
-                android:text="@string/all_moods_and_generes"/>
-
-
-            <android.support.v7.widget.RecyclerView
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:id="@+id/albumSongMap"
-                android:layout_below="@id/moods"
-                app:layout_behavior="@string/appbar_scrolling_view_behavior"
-
-                android:nestedScrollingEnabled="true">
-
-
-            </android.support.v7.widget.RecyclerView>
-        </RelativeLayout>
-
-
- </android.support.v4.widget.NestedScrollView>
-
-
-</android.support.design.widget.CoordinatorLayout>
+</LinearLayout>
 

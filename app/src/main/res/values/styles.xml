@@ -9,6 +9,7 @@
         <item name="android:windowTranslucentStatus">true</item>
         <item name="android:windowTranslucentNavigation">true</item>
     </style>
+
     <style name="FullscreenTheme" parent="AppTheme">
         <item name="android:windowActionBarOverlay">true</item>
         <item name="android:windowBackground">@null</item>
@@ -17,11 +18,13 @@
     <style name="SongListTheme" parent="Theme.AppCompat.Light.DarkActionBar">
         <item name="actionBarItemBackground">@android:color/transparent</item>
     </style>
-    <style name="TextAppearance" >
+
+    <style name="TextAppearance">
         <item name="android:textColor">#fff</item>
         <item name="android:textStyle">bold</item>
         <item name="android:textSize">16sp</item>
     </style>
+
     <style name="AppTheme.MyMusicTextStyle">
         <item name="android:textSize">14sp</item>
         <item name="android:paddingStart">25dp</item>
@@ -40,6 +43,14 @@
         <item name="android:textColor">@android:color/holo_blue_dark</item>
     </style>
 
+    <style name="FullscreenTheme.NoActionBar">
+        <item name="windowActionBar">false</item>
+        <item name="windowNoTitle">true</item>
+    </style>
+
+    <style name="FullscreenTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
+
+    <style name="FullscreenTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
 
 
 </resources>

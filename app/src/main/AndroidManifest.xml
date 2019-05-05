@@ -10,6 +10,10 @@
     <uses-permission android:name="android.permission.READ_PHONE_STATE" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
 
+    <meta-data
+        android:name="com.google.android.gms.wallet.api.enabled"
+        android:value="true" />
+
     <application
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
@@ -18,16 +22,22 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/FullscreenTheme">
+        <activity android:name=".PreminumActivity"></activity>
+        <activity android:name=".SearchActivity" />
+        <activity android:name=".DeviceSongsActivity" />
+        <activity android:name=".OfflineSongListActivity" />
+        <activity android:name=".TestActivity" />
+
         <service
             android:name=".AudioStreamMediaService"
             android:enabled="true"
-            android:exported="true"></service>
+            android:exported="true" />
         <service
             android:name=".MediaPlayerService"
             android:enabled="true"
             android:exported="true" />
 
-        <activity android:name=".OnDeviceSongActivity" />
+        <activity android:name=".DeviceSongAlbumsActivity" />
         <activity android:name=".SongListActivity" />
         <activity android:name=".CurrentSongActivity" />
         <activity

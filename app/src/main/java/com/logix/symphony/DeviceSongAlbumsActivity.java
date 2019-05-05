@@ -17,11 +17,11 @@ import com.logix.symphony.Model.DeviceSongModel;
 
 import java.util.ArrayList;
 
-public class OnDeviceSongActivity extends AppCompatActivity {
+public class DeviceSongAlbumsActivity extends AppCompatActivity {
 
     public static String Broadcast_PLAY_NEW_AUDIO = "om.logix.symphony.PlayNewAudio" ;
 
-    private ArrayList<DeviceSongModel> audioList = new ArrayList<>();;
+    private ArrayList<DeviceSongModel> audioList = new ArrayList<>();
 
 
     @Override
@@ -29,24 +29,31 @@ public class OnDeviceSongActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_on_device_song);
 
-        loadAudio();
+        int mode = getIntent().getIntExtra("Interaction",00);
+
+
+            loadAudio(null);
+
         initRecyclerView();
     }
 
 
-    private void loadAudio() {
+    private void loadAudio(String downloadpath) {
         ContentResolver contentResolver = getContentResolver();
 
         Uri uri = MediaStore.Audio.Albums.EXTERNAL_CONTENT_URI;
-        String selection = MediaStore.Audio.Albums.ALBUM+ "=?";
+
+        String selection =downloadpath;
         String sortOrder = MediaStore.Audio.Media.TITLE + " ASC";
         String [] projection = { MediaStore.Audio.Albums._ID,MediaStore.Audio.Albums.ALBUM, MediaStore.Audio.Albums.ALBUM_ART, MediaStore.Audio.Albums.ARTIST };
         String albumId = MediaStore.Audio.Albums.ALBUM_ID;
-        Cursor cursor = (Cursor) contentResolver.query(uri,projection,null,null,null);
+        Cursor cursor;
+             cursor = (Cursor) contentResolver.query(uri, projection, null, null, null);
+
 
 
         if (cursor != null && cursor.getCount() > 0) {
-            Toast.makeText(OnDeviceSongActivity.this," inside load",Toast.LENGTH_SHORT).show();
+            Toast.makeText(DeviceSongAlbumsActivity.this," inside load",Toast.LENGTH_SHORT).show();
 
             audioList = new ArrayList<>();
             while (cursor.moveToNext()) {
@@ -72,8 +79,8 @@ public class OnDeviceSongActivity extends AppCompatActivity {
             DeviceSongAdapter adapter = new DeviceSongAdapter(this, audioList, new AdapterClickInterface() {
                 @Override
                 public void onAdapterClick(String hrm, String imagePath) {
-                    Toast.makeText(OnDeviceSongActivity.this," "+hrm,Toast.LENGTH_SHORT).show();
-                    Intent intent = new Intent(OnDeviceSongActivity.this,SongListActivity.class);
+                    Toast.makeText(DeviceSongAlbumsActivity.this," "+hrm,Toast.LENGTH_SHORT).show();
+                    Intent intent = new Intent(DeviceSongAlbumsActivity.this,SongListActivity.class);
                     Bundle bundle = new Bundle();
                     bundle.putString("AlbumName",hrm);
                     bundle.putString("Image",imagePath);

@@ -2,10 +2,12 @@
 <RelativeLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:gravity="center"
+    android:layout_height="60dp"
+    android:gravity="center_vertical"
     android:padding="7dp"
+
     android:background="@android:color/black">
+
     <ImageView
         android:layout_width="50dp"
         android:layout_height="50dp"
@@ -17,6 +19,8 @@
         android:layout_height="wrap_content"
         android:layout_centerInParent="true"
         android:orientation="vertical"
+        android:id="@+id/songLinear"
+
         android:layout_toEndOf="@id/songListSongImage"
 
         >
@@ -44,6 +48,7 @@
             android:ellipsize="end"
             android:maxLines="1"
             android:focusable="true"
+
             android:textSize="13sp"
             android:textStyle="bold"
             android:layout_marginStart="20dp"
@@ -54,15 +59,14 @@
     </LinearLayout>
 
     <ImageView
-        android:layout_width="27dp"
-        android:layout_height="35dp"
-        android:src="@drawable/outline_more_vert_white_18dp"
+        android:id="@+id/songOptions"
+        android:layout_width="15dp"
+        android:layout_height="match_parent"
         android:layout_alignParentEnd="true"
-        android:scaleType="centerCrop"
         android:layout_marginRight="15dp"
         android:foregroundTint="#fff"
-        android:layout_centerVertical="true"
-        android:id="@+id/songOptions"/>
+        android:scaleType="centerCrop"
+        android:src="@drawable/outline_more_vert_white_48dp" />
 
 
 </RelativeLayout>

@@ -5,6 +5,7 @@
     android:layout_height="wrap_content"
     android:gravity="center"
     android:padding="7dp"
+    android:id="@+id/current_song_minimized"
     android:background="@color/glossblack">
     <ImageView
         android:layout_width="40dp"

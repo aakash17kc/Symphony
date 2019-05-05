@@ -111,7 +111,7 @@ public class SignUpActivity extends AppCompatActivity implements View.OnClickLis
                         if (task.isSuccessful()) {
                             // Sign in success, update UI with the signed-in user's information
                             Log.d(TAG, "signInWithCredential:success");
-                            Toast.makeText(SignUpActivity.this,"Google Sing In Sucessful",Toast.LENGTH_SHORT).show();
+                           // Toast.makeText(SignUpActivity.this,"Google Sing In Sucessful",Toast.LENGTH_SHORT).show();
                             FirebaseUser user = mAuth.getCurrentUser();
                             updateUI(user);
                         } else {

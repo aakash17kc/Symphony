@@ -52,6 +52,27 @@
             android:src="@drawable/baseline_keyboard_arrow_right_white_18dp"/>
 
     </LinearLayout>
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:layout_margin="3dp"
+                android:id="@+id/logout"
+                >
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    style="@style/AppTheme.MyMusicTextStyle"
+                    android:text="@string/logout"/>
+
+                <ImageView
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="0.06"
+                    android:src="@drawable/baseline_keyboard_arrow_right_white_18dp"/>
+
+            </LinearLayout>
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="50dp"
@@ -170,13 +191,12 @@
                 android:layout_margin="3dp">
 
                 <TextView
+                    style="@style/AppTheme.MyMusicTextStyle"
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
                     android:layout_weight="1"
-                    style="@style/AppTheme.MyMusicTextStyle"
 
-                    android:text="@string/download_quality"
-                   />
+                    android:text="@string/download_quality" />
 
                 <ImageView
                     android:layout_width="0dp"
@@ -328,6 +348,7 @@
                     android:src="@drawable/baseline_keyboard_arrow_right_white_18dp"/>
 
             </LinearLayout>
+
 
 
         </LinearLayout>

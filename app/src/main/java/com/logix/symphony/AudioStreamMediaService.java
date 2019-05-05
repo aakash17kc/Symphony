@@ -1,7 +1,6 @@
 package com.logix.symphony;
 
 import android.app.PendingIntent;
-import android.app.ProgressDialog;
 import android.app.Service;
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -24,7 +23,6 @@ import android.support.v4.media.app.NotificationCompat.MediaStyle;
 import android.telephony.PhoneStateListener;
 import android.telephony.TelephonyManager;
 import android.util.Log;
-import android.widget.ProgressBar;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -100,7 +98,7 @@ public void onCreate() {
         callStateListener();
         //ACTION_AUDIO_BECOMING_NOISY -- change in audio outputs -- BroadcastReceiver
         registerBecomingNoisyReceiver();
-        //Listen for new Audio to play -- BroadcastReceiver
+        //Listen for new_releases Audio to play -- BroadcastReceiver
         register_playNewAudio();
         }
 
@@ -296,7 +294,7 @@ public class LocalBinder extends Binder {
 
     private void initMediaPlayer() {
         if (mediaPlayer == null)
-            mediaPlayer = new MediaPlayer();//new MediaPlayer instance
+            mediaPlayer = new MediaPlayer();//new_releases MediaPlayer instance
 
         //Set up MediaPlayer event listeners
         mediaPlayer.setOnCompletionListener(this);
@@ -448,7 +446,7 @@ public class LocalBinder extends Binder {
 
 
         mediaSessionManager = (MediaSessionManager) getSystemService(Context.MEDIA_SESSION_SERVICE);
-        // Create a new MediaSession
+        // Create a new_releases MediaSession
         mediaSession = new MediaSessionCompat(getApplicationContext(), "AudioPlayer");
         //Get MediaSessions transport controls
         transportControls = mediaSession.getController().getTransportControls();
@@ -537,7 +535,7 @@ public class LocalBinder extends Binder {
         int notificationAction = android.R.drawable.ic_media_pause;//needs to be initialized
         PendingIntent play_pauseAction = null;
 
-        //Build a new notification according to the current state of the MediaPlayer
+        //Build a new_releases notification according to the current state of the MediaPlayer
         if (playbackStatus == PlaybackStatus.PLAYING) {
             notificationAction = android.R.drawable.ic_media_pause;
             //create the pause action
@@ -551,7 +549,7 @@ public class LocalBinder extends Binder {
         // Bitmap largeIcon = BitmapFactory.decodeFile(mAlbumImage); //replace with your own image
         Bitmap largeIcon = BitmapFactory.decodeResource(getResources(),R.drawable.zara);
 
-        // Create a new Notification
+        // Create a new_releases Notification
         NotificationCompat.Builder notificationBuilder = (NotificationCompat.Builder) new NotificationCompat.Builder(this)
                 // Hide the timestamp
                 .setShowWhen(false)
@@ -631,13 +629,13 @@ public class LocalBinder extends Binder {
 
 
     /**
-     * Play new Audio
+     * Play new_releases Audio
      */
     private BroadcastReceiver playNewAudio = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
 
-            //Get the new media index form SharedPreferences
+            //Get the new_releases media index form SharedPreferences
             audioIndex = new StorageUtil(getApplicationContext()).loadAudioIndex();
             if (audioIndex != -1 && audioIndex < audioList.size()) {
                 //index is in a valid range
@@ -647,7 +645,7 @@ public class LocalBinder extends Binder {
             }
 
             //A PLAY_NEW_AUDIO action received
-            //reset mediaPlayer to play the new Audio
+            //reset mediaPlayer to play the new_releases Audio
             stopMedia();
             mediaPlayer.reset();
             initMediaPlayer();
@@ -658,7 +656,7 @@ public class LocalBinder extends Binder {
 
     private void register_playNewAudio() {
         //Register playNewMedia receiver
-        IntentFilter filter = new IntentFilter(OnDeviceSongActivity.Broadcast_PLAY_NEW_AUDIO);
+        IntentFilter filter = new IntentFilter(DeviceSongAlbumsActivity.Broadcast_PLAY_NEW_AUDIO);
         registerReceiver(playNewAudio, filter);
     }
 

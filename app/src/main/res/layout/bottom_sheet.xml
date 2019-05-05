@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/bottom_sheet"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginLeft="50dp"
+    android:layout_marginRight="50dp"
+    android:orientation="vertical"
+    android:background="@color/glossblack"
+    app:cardCornerRadius="10dp"
+    app:behavior_hideable="true"
+    app:behavior_peekHeight="80dp"
+    app:layout_behavior="android.support.design.widget.BottomSheetBehavior">
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+        <Button
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:id="@+id/downloadSong"
+            android:text="@string/download"
+            android:textColor="#000"
+            android:layout_margin="8dp"
+            android:background="@drawable/bottom_sheet_button_bg"/>
+        <Button
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:id="@+id/add_to_playlist"
+            android:layout_margin="8dp"
+            android:textColor="#000"
+
+            android:text="@string/add_to_playlist"
+            android:background="@drawable/bottom_sheet_button_bg"/>
+
+    </LinearLayout>
+
+
+
+
+</android.support.v7.widget.CardView>

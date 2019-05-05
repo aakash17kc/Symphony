@@ -1,13 +1,16 @@
 package com.logix.symphony;
 
 import android.content.Context;
+import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -27,6 +30,8 @@ public class MyMusicFragment extends Fragment {
     Uri mPhotoUrl;
     TextView mName;
     String mPhotoString;
+
+    Button premiumAccount;
 
     public MyMusicFragment() {
         // Required empty public constructor
@@ -49,6 +54,12 @@ public class MyMusicFragment extends Fragment {
 
         mAuth = FirebaseAuth.getInstance();
         mUser = mAuth.getCurrentUser();
+            view.findViewById(R.id.premium_account).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(getActivity(),PreminumActivity.class));
+            }
+        });
 
 
         if(mUser!=null){
@@ -62,8 +73,20 @@ public class MyMusicFragment extends Fragment {
                 .load(mPhotoUrl)
                 .circleCrop()
                 .into(profileImage);
+        LinearLayout logout = view.findViewById(R.id.logout);
+        logout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mAuth.signOut();
+                Toast.makeText(getActivity(),"Logged Out",Toast.LENGTH_SHORT).show();
+                startActivity(new Intent(getActivity(),SignUpActivity.class));
+                getActivity().finish();
+            }
+        });
+
 
         return view;
+
     }
 
     @Override

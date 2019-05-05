@@ -8,6 +8,7 @@ import android.support.annotation.NonNull;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.v4.app.Fragment;
+import android.support.v7.widget.CardView;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.StaggeredGridLayoutManager;
@@ -18,7 +19,6 @@ import android.view.ViewGroup;
 import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.DocumentReference;
@@ -68,54 +68,26 @@ public class BrowseFragment extends Fragment {
         // Inflate the layout for this fragment
         View view = LayoutInflater.from(getActivity()).inflate(R.layout.fragment_browse,container,false);
 
-        recyclerView = view.findViewById(R.id.albumSongMap);
+        //recyclerView = view.findViewById(R.id.albumSongMap);
 
         firebaseFirestore = FirebaseFirestore.getInstance();
 
-        View onDevice = view.findViewById(R.id.onDevice);
+       CardView onDevice = view.findViewById(R.id.onDevice);
 
         onDevice.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                startActivity(new Intent(getActivity(),OnDeviceSongActivity.class));
+                startActivity(new Intent(getActivity(), DeviceSongAlbumsActivity.class));
             }
         });
 
-
-
-
-
-
-        browseRecyclerAdapter = new BrowseRecyclerAdapter(getActivity(), browseDataModelArrayList);
+       /* browseRecyclerAdapter = new BrowseRecyclerAdapter(getActivity(), browseDataModelArrayList);
 
         recyclerView.setLayoutManager(new StaggeredGridLayoutManager(2,StaggeredGridLayoutManager.VERTICAL));
         recyclerView.setItemAnimator(new DefaultItemAnimator());
 
         recyclerView.setAdapter(browseRecyclerAdapter);
-        mGetData();
-
-
-
-        final CollapsingToolbarLayout collapsingToolbarLayout = (CollapsingToolbarLayout) view.findViewById(R.id.collapsinToolbar);
-        AppBarLayout appBarLayout = (AppBarLayout) view.findViewById(R.id.app_bar_layout);
-        appBarLayout.addOnOffsetChangedListener(new AppBarLayout.OnOffsetChangedListener() {
-            boolean isShow = true;
-            int scrollRange = -1;
-
-            @Override
-            public void onOffsetChanged(AppBarLayout appBarLayout, int verticalOffset) {
-                if (scrollRange == -1) {
-                    scrollRange = appBarLayout.getTotalScrollRange();
-                }
-                if (scrollRange + verticalOffset == 0) {
-                    collapsingToolbarLayout.setTitle("Browse");
-                    isShow = true;
-                } else if(isShow) {
-                    collapsingToolbarLayout.setTitle(" ");//carefull there should a space between double quote otherwise it wont work
-                    isShow = false;
-                }
-            }
-        });
+        mGetData();*/
 
 
 

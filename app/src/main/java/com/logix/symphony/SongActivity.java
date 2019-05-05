@@ -16,6 +16,7 @@ import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -67,13 +68,13 @@ public class SongActivity extends AppCompatActivity implements BottomNavigationV
 
 
 
-        TextView curPlaySongName = findViewById(R.id.current_song_name);
+          /*TextView curPlaySongName = findViewById(R.id.current_song_name);
         curPlaySongName.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 startActivity(new Intent(SongActivity.this,CurrentSongActivity.class));
             }
-        });
+        });*/
 
         }
 
@@ -109,7 +110,7 @@ public class SongActivity extends AppCompatActivity implements BottomNavigationV
                 break;
             case R.id.my_music:
                 fragment = new MyMusicFragment();
-               /* Bundle bundle = new Bundle();
+               /* Bundle bundle = new_releases Bundle();
                 bundle.putString("Name",mUserName);
                 bundle.putString("PhotoUrl", String.valueOf(mPhotoUrl));
                 fragment.setArguments(bundle);*/

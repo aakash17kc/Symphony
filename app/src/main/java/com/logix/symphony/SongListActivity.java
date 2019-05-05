@@ -1,16 +1,22 @@
 package com.logix.symphony;
 
+import android.Manifest;
+import android.app.DownloadManager;
 import android.content.ComponentName;
 import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.ServiceConnection;
+import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.net.Uri;
+import android.os.Build;
+import android.os.Environment;
 import android.os.IBinder;
 import android.os.PersistableBundle;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
+import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
@@ -18,7 +24,6 @@ import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -30,16 +35,18 @@ import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.logix.symphony.Adapters.VerticalRecyclerAdapter;
+import com.logix.symphony.Interfaces.AdapterClickInterface;
 import com.logix.symphony.Model.VerticalRecyclerModel;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 
-import static com.logix.symphony.OnDeviceSongActivity.Broadcast_PLAY_NEW_AUDIO;
+import static com.logix.symphony.DeviceSongAlbumsActivity.Broadcast_PLAY_NEW_AUDIO;
 
-public class SongListActivity extends AppCompatActivity {
+public class SongListActivity extends AppCompatActivity implements BottomSheetSongOption.BottomSheetListener {
 
     ArrayList<SongListClass> list = new ArrayList<>();
     RecyclerView songListView;
@@ -82,6 +89,7 @@ public class SongListActivity extends AppCompatActivity {
     DocumentReference documentReference;
     private HashMap<String, HashMap<String, String>> temphashmap;
     private ImageView mImageResource;
+    private boolean flag;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -118,22 +126,144 @@ public class SongListActivity extends AppCompatActivity {
         }
 
 
+       // saveToDownloadDirectory();
 
+
+
+
+    }
+
+    private void loadDownloadedAudio() {
+        ContentResolver contentResolver = getContentResolver();
+
+        Uri uri = MediaStore.Audio.Media.EXTERNAL_CONTENT_URI;
+        String selection =MediaStore.Audio.Media.ALBUM + "=?";
+        String sortOrder = MediaStore.Audio.Media.TITLE + " ASC";
+        String [] selectionargs = {"/Symphony/Downloads"};
+        String[] projection ={MediaStore.Audio.Media.DATA, MediaStore.Audio.Media._ID, MediaStore.Audio.Media.TITLE,MediaStore.Audio.Media.DISPLAY_NAME,MediaStore.Audio.Media.ALBUM,
+                MediaStore.Audio.Media.ARTIST };
+        Cursor cursor = (Cursor) contentResolver.query(uri, projection, selection, selectionargs, null);
+
+        if (cursor != null && cursor.getCount() > 0) {
+            audioList = new ArrayList<>();
+            while (cursor.moveToNext()) {
+                String data = cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Media.DATA));
+                String title = cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Media.TITLE));
+                String album = cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Media.ALBUM));
+                String artist = cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Media.ARTIST));
+
+                // Save to audioList
+
+
+                audioList.add(new Audio(data, title, album, artist));
+
+                mSongList.add(new SongListClass(title,artist,imagepath,""));
+            }
+        }
+        cursor.close();
+    }
+
+    private void saveToDownloadDirectory(String songurl, String songname) {
+
+        checkStoreagePersmission();
+        try {
+            if (flag) {
+                String state = Environment.getExternalStorageState();
+                if (Environment.MEDIA_MOUNTED.equals(state)) {
+                    // Toast.makeText(this, "Space available", Toast.LENGTH_SHORT).show();
+                    File root = Environment.getExternalStorageDirectory();
+
+                    //for private files. deleted after app uninstall
+                    File privateroot = this.getExternalFilesDir(null);
+
+                    File dir = new File(root + "/Symphony/Downloads");
+
+
+                    if (!dir.exists()) {
+
+                        if (dir.mkdirs()) {
+                            Toast.makeText(this, " Folder created", Toast.LENGTH_SHORT).show();
+
+                        } else {
+                            Toast.makeText(this, " Folder not created", Toast.LENGTH_SHORT).show();
+
+                        }
+                    } else {
+                        //Toast.makeText(this, " Folder exits", Toast.LENGTH_SHORT).show();
+
+                    }
+                    String filepath = "/Symphony/Downloads";
+
+                    Toast.makeText(this, " " + filepath, Toast.LENGTH_SHORT).show();
+
+
+                    DownloadManager downloadManager = (DownloadManager) getSystemService(DOWNLOAD_SERVICE);
+
+                    Uri uri = Uri.parse(songurl);
+                    DownloadManager.Request request = new DownloadManager.Request(uri);
+
+                    request.setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED);
+                    request.setDestinationInExternalPublicDir(filepath, songname + ".mp3");
+                    // request.setDestinationInExternalFilesDir(SongListActivity.this,filepath,songname+".mp3");
+                    downloadManager.enqueue(request);
+
+
+                }
+            }
+        }
+        catch (Exception e){
+            Toast.makeText(SongListActivity.this,"File is already Offline",Toast.LENGTH_SHORT).show();
+        }
+
+
+    }
+
+    private void checkStoreagePersmission() {
+
+        if (Build.VERSION.SDK_INT >= 23) {
+            if (checkSelfPermission(android.Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED) {
+                Toast.makeText(this, "Granted", Toast.LENGTH_SHORT).show();
+                flag = true;
+
+            } else {
+                ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, 100);
+            }
+        }
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        //super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+
+        if (requestCode == 100) {
+            if (grantResults[0] == PackageManager.PERMISSION_GRANTED ) {
+                flag = true;
+            }
+        } else {
+            Toast.makeText(this, "Denied " + permissions[0], Toast.LENGTH_SHORT).show();
+
+        }
 
     }
 
     private void initRecyclerView() {
         if (mSongList.size() > 0) {
             songListView.setLayoutManager(new LinearLayoutManager(this,LinearLayoutManager.VERTICAL,false));
-            SongListAdapter songListAdapter = new SongListAdapter(this,mSongList);
+            final SongListAdapter songListAdapter = new SongListAdapter(this,mSongList, audioList, getSupportFragmentManager(), new AdapterClickInterface() {
+                @Override
+                public void onAdapterClick(String hrm, String position) {
+                    int index = Integer.parseInt(position);
+                    playAudio(index);
+                }
+            });
 
             songListView.setAdapter(songListAdapter);
-            songListView.addOnItemTouchListener(new RecyclerItemTouchListener(this, new onItemClickListener() {
+           /* songListView.addOnItemTouchListener(new_releases RecyclerItemTouchListener(this, new_releases onItemClickListener() {
                 @Override
                 public void onClick(View view, int index) {
                     playAudio(index);
                 }
-            }));
+            }));*/
 
         }
     }
@@ -155,7 +285,7 @@ public class SongListActivity extends AppCompatActivity {
             startService(audioplayerIntent);
             bindService(audioplayerIntent, audioserviceConnection, Context.BIND_AUTO_CREATE);
         } else {
-            //Store the new audioIndex to SharedPreferences
+            //Store the new_releases audioIndex to SharedPreferences
             StorageUtil storage = new StorageUtil(getApplicationContext());
             storage.storeAudioIndex(audioIndex);
 
@@ -182,7 +312,7 @@ public class SongListActivity extends AppCompatActivity {
             startService(bufferplayerIntent);
             bindService(bufferplayerIntent, bufferServiceConnection, Context.BIND_AUTO_CREATE);
         } else {
-            //Store the new audioIndex to SharedPreferences
+            //Store the new_releases audioIndex to SharedPreferences
             StorageUtil storage = new StorageUtil(getApplicationContext());
             storage.storeAudioIndex(audioIndex);
 
@@ -257,7 +387,7 @@ public class SongListActivity extends AppCompatActivity {
     /*private void temp() {
 
         documentReference = firebaseFirestore.document("AllSongs/Essentials");
-        documentReference.get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+        documentReference.get().addOnSuccessListener(new_releases OnSuccessListener<DocumentSnapshot>() {
             @Override
             public void onSuccess(DocumentSnapshot documentSnapshot) {
                 temphashmap = (HashMap<String, HashMap<String, String>>) documentSnapshot.get("SongList");
@@ -266,7 +396,7 @@ public class SongListActivity extends AppCompatActivity {
                 Log.i("SUCCESS ", String.valueOf(temphashmap));
 
             }
-        }).addOnFailureListener(new OnFailureListener() {
+        }).addOnFailureListener(new_releases OnFailureListener() {
             @Override
             public void onFailure(@NonNull Exception e) {
                 Toast.makeText(SongListActivity.this, "" + e.getMessage(), Toast.LENGTH_SHORT).show();
@@ -299,66 +429,43 @@ public class SongListActivity extends AppCompatActivity {
                // Log.i("TYPE",c)
 
                 if(childPair.getKey().equals("Artist")){
+                    artist = (String) childPair.getValue();
                     list.add(new SongListClass(parentPair.getKey(), (String) childPair.getValue(),imagepath,""));
-                    artist = childPair.getValue().toString();
+                   // artist = childPair.getValue().toString();
 
                 }
                 if(childPair.getKey().equals("SongUrl")){
+
                     songurl = (String) childPair.getValue();
+                    //list.add(new_releases SongListClass(parentPair.getKey(), artist,imagepath,songurl));
+
                     audioList.add(new Audio(songurl, songName, albumName, artist));
                     Log.i("SONGLIST", ""+songName+" : "+songurl);
 
 
                 }
-
-                //list.add(new SongListClass(parentPair.getKey(), (String) childPair.getValue(),imagepath,""));
-                 /*if(childPair.getKey().equals("Artist") && child.hasNext()){
-                     list.add(new SongListClass(parentPair.getKey(), (String) childPair.getValue(),imagepath,""));
-
-                     childPair = child.next();
-                   songurl = (String) childPair.getValue();
-                     audioList.add(new Audio(songurl, songName, albumName, artistName));
-                 }
-                 else if (childPair.getKey().equals("SongUrl")){
-                     songurl = (String) childPair.getValue();
-                     audioList.add(new Audio(songurl, songName, albumName, artistName));
-                 }*/
             }
-          /*  String songName = parentPair.getKey();
-            String artistName = "";
-            String songurl = " ";
 
-            while (child.hasNext()){
-                Map.Entry childPair = child.next();
-                String key = (String) childPair.getKey();
-                String value = (String) childPair.getValue();
-
-                if(key.equals("Artist")){
-                    artistName = (String) childPair.getValue();
-                    songurl = " ";
-                    list.add(new SongListClass(parentPair.getKey(), value,imagepath,""));
-                }
-                else  if (key.equals("SongUrl")){
-                    songurl = value;
-                    audioList.add(new Audio(songurl, songName, albumName, artistName));
-
-                }
-
-            }*/
 
 
         }
 
         songListView.setLayoutManager(new LinearLayoutManager(this,LinearLayoutManager.VERTICAL,false));
-        SongListAdapter songListAdapter = new SongListAdapter(this,list);
+        SongListAdapter songListAdapter = new SongListAdapter(this, list, audioList,getSupportFragmentManager(), new AdapterClickInterface() {
+            @Override
+            public void onAdapterClick(String hrm, String position) {
+                int index = Integer.parseInt(position);
+                playAudio(index);
+            }
+        });
 
         songListView.setAdapter(songListAdapter);
-        songListView.addOnItemTouchListener(new RecyclerItemTouchListener(this, new onItemClickListener() {
+        /*songListView.addOnItemTouchListener(new_releases RecyclerItemTouchListener(this, new_releases onItemClickListener() {
             @Override
             public void onClick(View view, int index) {
                 bufferAudio(index);
             }
-        }));
+        }));*/
 
 
     }
@@ -434,7 +541,22 @@ public class SongListActivity extends AppCompatActivity {
         }
     };
 
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        finish();
+    }
 
 
 
+
+
+
+    @Override
+    public void onBottomOptionSelected(String songurl, String songname) {
+        saveToDownloadDirectory(songurl,songname);
+      // Toast.makeText(SongListActivity.this,songurl+songurl.length(),Toast.LENGTH_SHORT).show();
+       // Toast.makeText(SongListActivity.this,songname,Toast.LENGTH_SHORT).show();
+
+    }
 }

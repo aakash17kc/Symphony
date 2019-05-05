@@ -1,26 +1,41 @@
 package com.logix.symphony;
 
 import android.content.Context;
+import android.graphics.Color;
+import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.v4.app.FragmentManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
+import com.logix.symphony.Interfaces.AdapterClickInterface;
 
 import java.util.ArrayList;
+import java.util.Stack;
 
 public class SongListAdapter extends RecyclerView.Adapter<SongListAdapter.SongListHolder> {
 
     Context context;
     ArrayList<SongListClass> list = new ArrayList<>();
+    int row_index=-1;
+    BottomSheetSongOption bottomSheetSongOption;
+    FragmentManager fragmentManager;
+    AdapterClickInterface adapterClickInterface;
+    Bundle songbundle;
+    ArrayList<Audio> audioArrayList;
 
-    SongListAdapter(Context context, ArrayList<SongListClass> list){
+    SongListAdapter(Context context, ArrayList<SongListClass> list, ArrayList<Audio> audioList, FragmentManager fragmentManager, AdapterClickInterface adapterClickInterface){
         this.context = context;
         this.list  = list;
+        this.fragmentManager = fragmentManager;
+        this.adapterClickInterface = adapterClickInterface;
+        this.audioArrayList = audioList;
     }
 
     @NonNull
@@ -32,14 +47,54 @@ public class SongListAdapter extends RecyclerView.Adapter<SongListAdapter.SongLi
     }
 
     @Override
-    public void onBindViewHolder(@NonNull SongListHolder songListHolder, int i) {
-        SongListClass songListClass = list.get(i);
+    public void onBindViewHolder(@NonNull final SongListHolder songListHolder, final int i) {
+        final SongListClass songListClass = list.get(i);
+        final Audio song = audioArrayList.get(i);
         ImageView image = songListHolder.image;
         Glide.with(context).load(songListClass.getImage()).centerCrop().into(image);
 
 
         songListHolder.songName.setText(songListClass.getSongName());
         songListHolder.artistName.setText(songListClass.getArtistName());
+
+        songListHolder.linearLayout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                adapterClickInterface.onAdapterClick(songListClass.getmSongUrl(),""+i);
+               // songListHolder.albumName.setTextColor(Color.parseColor("#00574B"));
+                row_index = i;
+                notifyDataSetChanged();
+
+
+            }
+        });
+
+        if(row_index==i){
+             songListHolder.songName.setTextColor(Color.parseColor("#00574B"));
+
+        }
+        else {
+            songListHolder.songName.setTextColor(Color.parseColor("#ffffff"));
+
+        }
+        songListHolder.options.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+            bottomSheetSongOption = new BottomSheetSongOption();
+                songbundle = new Bundle();
+                songbundle.putString("SongUrl",song.getData());
+                songbundle.putString("SongName",songListClass.getSongName());
+                bottomSheetSongOption.setArguments(songbundle);
+
+                bottomSheetSongOption.show(fragmentManager,"BOTTOMSHEET");
+
+
+
+                
+            }
+        });
+
+
 
     }
 
@@ -52,6 +107,8 @@ public class SongListAdapter extends RecyclerView.Adapter<SongListAdapter.SongLi
 
         TextView songName,artistName;
         ImageView image;
+        ImageView options;
+        LinearLayout linearLayout;
         public SongListHolder(@NonNull View itemView) {
             super(itemView);
 
@@ -59,6 +116,8 @@ public class SongListAdapter extends RecyclerView.Adapter<SongListAdapter.SongLi
             artistName = itemView.findViewById(R.id.songListSongArtist);
             artistName.setSelected(true);
             image = itemView.findViewById(R.id.songListSongImage);
+            options = itemView.findViewById(R.id.songOptions);
+            linearLayout = itemView.findViewById(R.id.songLinear);
 
         }
     }
