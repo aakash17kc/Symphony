@@ -18,5 +18,7 @@ public class MainActivity extends AppCompatActivity {
                 startActivity(new Intent(MainActivity.this,SignUpActivity.class));
             }
         },1500);
+
+        finish();
     }
 }

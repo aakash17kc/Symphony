@@ -57,6 +57,7 @@
                 android:textSize="15dp"
                 android:layout_gravity="center"
                 android:text="Album Name"
+                android:id="@+id/albumName"
                 android:textStyle="bold"
                 android:layout_marginTop="5dp"
                 android:textColor="#fff" />
@@ -84,6 +85,7 @@
                     android:layout_width="0dp"
                     android:layout_height="30dp"
                     android:layout_weight="1"
+                    android:tint="#fff"
                     android:layout_gravity="center"
                     android:src="@drawable/song_like"/>
                 <LinearLayout
@@ -108,12 +110,13 @@
                         android:id="@+id/playing_song_artists"
 
                         android:text="Sam Smith, Normani"
-                        android:layout_marginTop="2dp"
+                        android:layout_marginTop="4dp"
                         android:textColor="#fff"/>
                 </LinearLayout>
                 <ImageView
-                    android:layout_width="45dp"
-                    android:layout_height="45dp"
+                    android:layout_width="30dp"
+                    android:layout_height="30dp"
+                    android:layout_marginRight="10dp"
 
                     android:layout_gravity="center"
                     android:src="@drawable/outline_playlist_add_24"

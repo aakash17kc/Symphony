@@ -1,12 +1,16 @@
 package com.logix.symphony;
 
+import android.Manifest;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.CollapsingToolbarLayout;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.DefaultItemAnimator;
@@ -50,6 +54,7 @@ public class BrowseFragment extends Fragment {
     private ArrayList<String> mSongList;
     private HashMap<String,String> mSongMap = new HashMap<>();
     int counter=0;
+    private boolean flag = false;
 
     public BrowseFragment() {
         // Required empty public constructor
@@ -77,6 +82,8 @@ public class BrowseFragment extends Fragment {
         onDevice.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                checkStoreagePersmission();
+                if(flag)
                 startActivity(new Intent(getActivity(), DeviceSongAlbumsActivity.class));
             }
         });
@@ -95,85 +102,51 @@ public class BrowseFragment extends Fragment {
         return view;
     }
 
-    private void mGetData() {
+    public  void checkStoreagePersmission() {
+
+        if (Build.VERSION.SDK_INT >= 23) {
+            if (getActivity().checkSelfPermission(android.Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED) {
+                //    Toast.makeText(this, "Granted", Toast.LENGTH_SHORT).show();
+                flag = true;
+                startActivity(new Intent(getActivity(), DeviceSongAlbumsActivity.class));
 
 
-        firebaseFirestore.collection("AllSongs").get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-            @Override
-            public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                if (task.isSuccessful()) {
-                    albumList = new ArrayList<>();
+            } else {
+                ActivityCompat.requestPermissions(getActivity(), new String[]{android.Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.READ_PHONE_STATE}, 100);
+            }
+        }
+    }
 
-                    mSongList = new ArrayList<>();
-                    int i = 0;
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        //super.onRequestPermissionsResult(requestCode, permissions, grantResults);
 
-                    for (QueryDocumentSnapshot queryDocumentSnapshot : task.getResult()) {
-                        mSongList.add(String.valueOf(queryDocumentSnapshot.getId()));
-                      //  mSongList.add(queryDocumentSnapshot.getId());
-                    }
+        if (requestCode == 100) {
+            if (grantResults[0] == PackageManager.PERMISSION_GRANTED ) {
+                flag = true;
+                startActivity(new Intent(getActivity(), DeviceSongAlbumsActivity.class));
 
+            }
+            else {
+                Toast.makeText(getActivity(), "Denied " + permissions[0], Toast.LENGTH_SHORT).show();
 
-                    mSetData(mSongList);
-                    Log.i("LIST", String.valueOf(mSongList.size()));
+            }
+            if(grantResults[1]==PackageManager.PERMISSION_GRANTED){
 
+            }
+            else {
+                Toast.makeText(getActivity(), "Denied " + permissions[1], Toast.LENGTH_SHORT).show();
 
-                } else {
-                    Toast.makeText(getActivity(), "  " + task.getException(), Toast.LENGTH_SHORT).show();
-
-                }
             }
 
-
-        });
-
-
-
-    }
-
-    private void mSetData(ArrayList<String> mSongList) {
-
-        for(int i = 0; i< mSongList.size(); i++){
-            mSongMap = new HashMap<>();
-            documentReference = firebaseFirestore.document("AllSongs/"+ mSongList.get(i));
-
-            Log.i("BROWSE LIST", " " + mSongList.get(i));
-
-            documentReference.get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
-                @Override
-                public void onSuccess(DocumentSnapshot documentSnapshot) {
-                    Log.i("SUCCESS","DATA ADDED" +documentSnapshot.get("Artist"));
-
-                    String albumCover = (String) documentSnapshot.get("AlbumCover");
-                //    Log.i("ALBUMCOVER", albumCover);
-
-                    albumList.add(albumCover);
-                    browseDataModelArrayList.add(new BrowseDataModel(albumCover, (String) documentSnapshot.get("Artist")));
-                    browseRecyclerAdapter.notifyDataSetChanged();
-
-                    Log.i("LIST", String.valueOf(albumList));
-
-                }
-
-            });
-           // browseRecyclerAdapter.notifyDataSetChanged();
-
-
-
+        } else {
+            Toast.makeText(getActivity(), "Denied " + permissions[0] +" "+permissions[1], Toast.LENGTH_SHORT).show();
 
         }
 
-
-
-
-
     }
 
-    // TODO: Rename method, update argument and hook method into UI event
-    public void onButtonPressed(Uri uri) {
-        if (mListener != null) {
-            mListener.onFragmentInteraction(uri);
-        }
-    }
+
 
     @Override
     public void onAttach(Context context) {

@@ -5,12 +5,7 @@
     android:layout_height="match_parent"
     tools:context=".HomeFragment"
     android:background="@drawable/fragment_background">
-    <RelativeLayout
-        android:layout_width="match_parent"
-        android:layout_height="?actionBarSize"
-        android:id="@+id/tab">
 
-    </RelativeLayout>
     <ProgressBar
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -24,7 +19,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical"
-        android:layout_below="@id/tab"
+        android:layout_marginTop="?attr/actionBarSize"
         android:id="@+id/verticalRecycler"
         android:nestedScrollingEnabled="true"
         android:clickable="true"

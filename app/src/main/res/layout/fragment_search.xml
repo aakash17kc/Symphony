@@ -52,19 +52,20 @@
                     android:id="@+id/serach"
                     android:layout_marginTop="70dp"
                     android:layout_marginBottom="28dp"/>
-                <Button
-                    android:layout_width="wrap_content"
+                <LinearLayout
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:id="@+id/buttonsearch"/>
-
+                    android:layout_alignParentBottom="true"
+                    android:layout_below="@id/serach"
+                    android:orientation="horizontal">
 
             <EditText
-                android:layout_width="match_parent"
+                android:layout_width="wrap_content"
                 android:layout_height="45dp"
+                android:ems="12"
                 android:background="@drawable/google_button_bg"
                 android:layout_marginLeft="20dp"
                 android:layout_marginRight="20dp"
-                android:drawableLeft="@drawable/ic_search_black_24dp"
                 android:paddingLeft="20dp"
                 android:hint="@string/artist_songs_or_albums"
                 android:textStyle="bold"
@@ -72,9 +73,14 @@
                 android:gravity="center"
                 android:id="@+id/search_bar"
                 android:textColor="#000"
-                android:layout_alignParentBottom="true"
-                android:layout_below="@id/serach"
                 />
+                   <ImageView
+                       android:layout_width="50dp"
+                       android:layout_height="45dp"
+                       android:layout_gravity="right"
+                       android:id="@+id/buttonsearch"
+                       android:src="@drawable/search_round"/>
+                </LinearLayout>
 
             </RelativeLayout>
 

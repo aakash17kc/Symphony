@@ -7,8 +7,24 @@ public class Audio implements Serializable {
 
     private String data;
     private String title;
+
     private String album;
     private String artist;
+
+    public String getImage() {
+        return image;
+    }
+
+    private String image;
+
+    public Audio(String data, String title, String album, String artist, String image) {
+        this.data = data;
+        this.title = title;
+        this.album = album;
+        this.artist = artist;
+        this.image = image;
+    }
+
 
     public Audio(String data, String title, String album, String artist) {
         this.data = data;

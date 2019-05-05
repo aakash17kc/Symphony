@@ -40,24 +40,26 @@
                     android:layout_height="wrap_content"
                     android:textSize="15sp"
                     android:fontFamily="@font/proximanovasemibold"
-                    android:layout_marginBottom="10dp"
+                    android:layout_marginBottom="15dp"
+
 
                     android:text="Just Rs 119/month. Cancel Anytime"/>
                 <Button
                     android:layout_width="170dp"
-                    android:layout_height="45sp"
+                    android:layout_height="40dp"
                     android:layout_gravity="center"
                     android:text="GET PREMIUM"
-                    android:id="@+id/premium_button1"
                     android:elevation="16dp"
                     android:fontFamily="@font/proximanovasemibold"
                     android:textStyle="bold"
                     android:textSize="16sp"
-                    android:layout_marginBottom="10dp"
+                    android:layout_marginBottom="15dp"
 
                     android:background="@drawable/google_button_bg"
                     app:layout_anchorGravity="bottom|center"
                     android:textColor="@android:color/black"
+                    android:id="@+id/premium_button1"
+
                     />
                 <TextView
                     android:layout_width="match_parent"
@@ -99,19 +101,19 @@
                 android:layout_height="wrap_content"
                 android:textSize="15sp"
                 android:fontFamily="@font/proximanovasemibold"
-                android:layout_marginBottom="10dp"
+                android:layout_marginBottom="15dp"
 
                 android:text="Just Rs 130 for 1 month"/>
             <Button
                 android:layout_width="170dp"
-                android:layout_height="45sp"
+                android:layout_height="40dp"
                 android:layout_gravity="center"
                 android:text="GET PREMIUM"
                 android:elevation="16dp"
                 android:fontFamily="@font/proximanovasemibold"
                 android:textStyle="bold"
                 android:textSize="16sp"
-                android:layout_marginBottom="10dp"
+                android:layout_marginBottom="15dp"
 
                 android:background="@drawable/google_button_bg"
                 app:layout_anchorGravity="bottom|center"
@@ -159,19 +161,21 @@
                 android:layout_height="wrap_content"
                 android:textSize="15sp"
                 android:fontFamily="@font/proximanovasemibold"
-                android:layout_marginBottom="10dp"
+                android:layout_marginBottom="15dp"
+
 
                 android:text="As much as 50 % off for Students"/>
             <Button
                 android:layout_width="170dp"
-                android:layout_height="45sp"
+                android:layout_height="40dp"
                 android:layout_gravity="center"
                 android:text="GET PREMIUM"
                 android:elevation="16dp"
                 android:fontFamily="@font/proximanovasemibold"
                 android:textStyle="bold"
                 android:textSize="16sp"
-                android:layout_marginBottom="10dp"
+                android:layout_marginBottom="15dp"
+
                 android:id="@+id/premium_button2"
 
                 android:background="@drawable/google_button_bg"

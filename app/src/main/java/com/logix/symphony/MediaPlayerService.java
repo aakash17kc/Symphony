@@ -8,12 +8,15 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.drawable.Drawable;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.media.session.MediaSessionManager;
 import android.os.Binder;
 import android.os.IBinder;
 import android.os.RemoteException;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.app.NotificationManagerCompat;
 import android.support.v4.media.MediaMetadataCompat;
@@ -23,6 +26,12 @@ import android.support.v4.media.app.NotificationCompat.MediaStyle;
 import android.telephony.PhoneStateListener;
 import android.telephony.TelephonyManager;
 import android.util.Log;
+import android.widget.Toast;
+
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.target.CustomTarget;
+import com.bumptech.glide.request.target.NotificationTarget;
+import com.bumptech.glide.request.transition.Transition;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -37,6 +46,7 @@ public class MediaPlayerService extends Service implements MediaPlayer.OnComplet
     public static final String ACTION_PREVIOUS = "com.logix.symphony.ACTION_PREVIOUS";
     public static final String ACTION_NEXT = "com.logix.symphony.ACTION_NEXT";
     public static final String ACTION_STOP = "com.logix.symphony.ACTION_STOP";
+    private static final String CHANNEL_ID = "100";
     public static String mAlbumImage ="";
 
     private MediaPlayer mediaPlayer;
@@ -52,6 +62,7 @@ public class MediaPlayerService extends Service implements MediaPlayer.OnComplet
     NotificationManagerCompat notificationManager ;
     //Used to pause/resume MediaPlayer
     private int resumePosition;
+    Bitmap largeIcon;
 
     //AudioFocus
     private AudioManager audioManager;
@@ -510,10 +521,23 @@ public class MediaPlayerService extends Service implements MediaPlayer.OnComplet
     }
 
     private void updateMetaData() {
-        Bitmap albumArt = BitmapFactory.decodeFile(mAlbumImage); //replace with medias albumArt
+        Glide.with(this)
+                .asBitmap()
+                .load(mAlbumImage)
+                .into(new CustomTarget<Bitmap>() {
+                    @Override
+                    public void onResourceReady(@NonNull Bitmap resource, @Nullable Transition<? super Bitmap> transition) {
+                        largeIcon = resource;
+                    }
+
+                    @Override
+                    public void onLoadCleared(@Nullable Drawable placeholder) {
+                    }
+                });
+
         // Update the current metadata
         mediaSession.setMetadata(new MediaMetadataCompat.Builder()
-                .putBitmap(MediaMetadataCompat.METADATA_KEY_ALBUM_ART, albumArt)
+                .putBitmap(MediaMetadataCompat.METADATA_KEY_ALBUM_ART, largeIcon)
                 .putString(MediaMetadataCompat.METADATA_KEY_ARTIST, activeAudio.getArtist())
                 .putString(MediaMetadataCompat.METADATA_KEY_ALBUM, activeAudio.getAlbum())
                 .putString(MediaMetadataCompat.METADATA_KEY_TITLE, activeAudio.getTitle())
@@ -521,14 +545,6 @@ public class MediaPlayerService extends Service implements MediaPlayer.OnComplet
     }
 
     private void buildNotification(PlaybackStatus playbackStatus) {
-
-        /**
-         * Notification actions -> playbackAction()
-         *  0 -> Play
-         *  1 -> Pause
-         *  2 -> Next track
-         *  3 -> Previous track
-         */
 
         int notificationAction = android.R.drawable.ic_media_pause;//needs to be initialized
         PendingIntent play_pauseAction = null;
@@ -542,32 +558,55 @@ public class MediaPlayerService extends Service implements MediaPlayer.OnComplet
             notificationAction = android.R.drawable.ic_media_play;
             //create the play action
             play_pauseAction = playbackAction(0);
+
+
         }
 
-        // Bitmap largeIcon = BitmapFactory.decodeFile(mAlbumImage); //replace with your own image
-        Bitmap largeIcon = BitmapFactory.decodeResource(getResources(),R.drawable.zara);
+        Intent intent = new Intent(this,CurrentSongActivity.class);
+        Audio audio = audioList.get(audioIndex);
+        intent.putExtra("AlbumName",audio.getAlbum());
+        intent.putExtra("Image",mAlbumImage);
+        intent.putExtra("Artist",audio.getArtist());
+        intent.putExtra("SongName",audio.getTitle());
+        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK|Intent.FLAG_ACTIVITY_NEW_TASK);
+
+        PendingIntent pendingIntent = PendingIntent.getActivity(this,0,intent,PendingIntent.FLAG_ONE_SHOT);
+
+
+        //Toast.makeText(this,mAlbumImage,Toast.LENGTH_SHORT).show();
+        Glide.with(this)
+                .asBitmap()
+                .load(mAlbumImage)
+                .into(new CustomTarget<Bitmap>() {
+                    @Override
+                    public void onResourceReady(@NonNull Bitmap resource, @Nullable Transition<? super Bitmap> transition) {
+                        largeIcon = resource;
+                    }
+
+                    @Override
+                    public void onLoadCleared(@Nullable Drawable placeholder) {
+                    }
+                });
+
+
 
         // Create a new_releases Notification
-        NotificationCompat.Builder notificationBuilder = (NotificationCompat.Builder) new NotificationCompat.Builder(this)
-                // Hide the timestamp
+        NotificationCompat.Builder notificationBuilder = (NotificationCompat.Builder) new NotificationCompat.Builder(this,CHANNEL_ID)
                 .setShowWhen(false)
                 // Set the Notification style
                 .setStyle(new MediaStyle() // Attach our MediaSession token
                         .setMediaSession(mediaSession.getSessionToken())
                         // Show our playback controls in the compat view
                         .setShowActionsInCompactView(0, 1, 2))
-                // Set the Notification color
                 .setColor(getResources().getColor(R.color.colorAccent))
-                // Set the large and small icons
                 .setLargeIcon(largeIcon)
                 .setSmallIcon(android.R.drawable.stat_sys_headset)
-                // Set Notification content information
                 .setContentText(activeAudio.getArtist())
                 .setContentTitle(activeAudio.getTitle())
                 .setContentInfo(activeAudio.getTitle())
-                .setOngoing(true)
                 .setAutoCancel(false)
                 // Add playback actions
+                .setContentIntent(pendingIntent)
                 .addAction(android.R.drawable.ic_media_previous, "previous", playbackAction(3))
                 .addAction(notificationAction, "pause", play_pauseAction)
                 .addAction(android.R.drawable.ic_media_next, "next", playbackAction(2));

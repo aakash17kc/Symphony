@@ -70,7 +70,7 @@ public class SongListAdapter extends RecyclerView.Adapter<SongListAdapter.SongLi
         });
 
         if(row_index==i){
-             songListHolder.songName.setTextColor(Color.parseColor("#00574B"));
+             songListHolder.songName.setTextColor(Color.parseColor("#73DF00"));
 
         }
         else {

@@ -31,6 +31,8 @@ import android.widget.Toast;
 import com.bumptech.glide.Glide;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -53,6 +55,8 @@ public class SongListActivity extends AppCompatActivity implements BottomSheetSo
 
     FirebaseFirestore firebaseFirestore;
 
+    ArrayList<String> songNames = new ArrayList<>();
+
 
     TextView mPlayListName;
     RecyclerView verticalRecycler;
@@ -68,6 +72,8 @@ public class SongListActivity extends AppCompatActivity implements BottomSheetSo
     
     String mAlbumArtist;
 
+    String songUrlDownload,songNameDownload;
+
 
     boolean audioserviceBound = false;
     boolean bufferaudioserviceBound = false;
@@ -78,7 +84,6 @@ public class SongListActivity extends AppCompatActivity implements BottomSheetSo
     ArrayList<Audio> audioList;
 
     private MediaPlayerService audioplayer;
-    private AudioStreamMediaService bufferAudioplayer;
     Intent audioplayerIntent ;
     Intent bufferplayerIntent;
     int mMode = 0;
@@ -90,6 +95,12 @@ public class SongListActivity extends AppCompatActivity implements BottomSheetSo
     private HashMap<String, HashMap<String, String>> temphashmap;
     private ImageView mImageResource;
     private boolean flag;
+    FirebaseAuth mAuth;
+    FirebaseUser mUser;
+    String mUserName;
+    TextView mName;
+
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -97,11 +108,22 @@ public class SongListActivity extends AppCompatActivity implements BottomSheetSo
         setContentView(R.layout.activity_song_list);
 
         songListView = findViewById(R.id.albumSongList);
+        mAuth = FirebaseAuth.getInstance();
+        mUser = mAuth.getCurrentUser();
+
+        mName = findViewById(R.id.albumMadeForUser);
+
+
+        if(mUser!=null){
+            mUserName = "MADE FOR "+mUser.getDisplayName().toUpperCase();
+        }
+
+
+        mName.setText(mUserName);
 
         firebaseFirestore = FirebaseFirestore.getInstance();
 
         audioplayerIntent = new Intent(this, MediaPlayerService.class);
-         bufferplayerIntent = new Intent(this,AudioStreamMediaService.class);
 
 
 
@@ -109,8 +131,10 @@ public class SongListActivity extends AppCompatActivity implements BottomSheetSo
          albumName = bundle.getStringExtra("AlbumName");
          imagepath =  bundle.getStringExtra("Image");
 
+
         ImageView songListCover = findViewById(R.id.songListCover);
         TextView album = findViewById(R.id.albumName);
+
 
         Glide.with(this).load(imagepath).centerCrop().into(songListCover);
         album.setText(albumName);
@@ -133,39 +157,9 @@ public class SongListActivity extends AppCompatActivity implements BottomSheetSo
 
     }
 
-    private void loadDownloadedAudio() {
-        ContentResolver contentResolver = getContentResolver();
-
-        Uri uri = MediaStore.Audio.Media.EXTERNAL_CONTENT_URI;
-        String selection =MediaStore.Audio.Media.ALBUM + "=?";
-        String sortOrder = MediaStore.Audio.Media.TITLE + " ASC";
-        String [] selectionargs = {"/Symphony/Downloads"};
-        String[] projection ={MediaStore.Audio.Media.DATA, MediaStore.Audio.Media._ID, MediaStore.Audio.Media.TITLE,MediaStore.Audio.Media.DISPLAY_NAME,MediaStore.Audio.Media.ALBUM,
-                MediaStore.Audio.Media.ARTIST };
-        Cursor cursor = (Cursor) contentResolver.query(uri, projection, selection, selectionargs, null);
-
-        if (cursor != null && cursor.getCount() > 0) {
-            audioList = new ArrayList<>();
-            while (cursor.moveToNext()) {
-                String data = cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Media.DATA));
-                String title = cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Media.TITLE));
-                String album = cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Media.ALBUM));
-                String artist = cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Media.ARTIST));
-
-                // Save to audioList
-
-
-                audioList.add(new Audio(data, title, album, artist));
-
-                mSongList.add(new SongListClass(title,artist,imagepath,""));
-            }
-        }
-        cursor.close();
-    }
 
     private void saveToDownloadDirectory(String songurl, String songname) {
 
-        checkStoreagePersmission();
         try {
             if (flag) {
                 String state = Environment.getExternalStorageState();
@@ -194,7 +188,9 @@ public class SongListActivity extends AppCompatActivity implements BottomSheetSo
                     }
                     String filepath = "/Symphony/Downloads";
 
-                    Toast.makeText(this, " " + filepath, Toast.LENGTH_SHORT).show();
+                 //   Toast.makeText(this, " " + filepath, Toast.LENGTH_SHORT).show();
+
+                    Toast.makeText(this, " Downloading ", Toast.LENGTH_SHORT).show();
 
 
                     DownloadManager downloadManager = (DownloadManager) getSystemService(DOWNLOAD_SERVICE);
@@ -218,15 +214,16 @@ public class SongListActivity extends AppCompatActivity implements BottomSheetSo
 
     }
 
-    private void checkStoreagePersmission() {
+    public  void checkStoreagePersmission() {
 
         if (Build.VERSION.SDK_INT >= 23) {
             if (checkSelfPermission(android.Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED) {
-                Toast.makeText(this, "Granted", Toast.LENGTH_SHORT).show();
+            //    Toast.makeText(this, "Granted", Toast.LENGTH_SHORT).show();
+                saveToDownloadDirectory(songUrlDownload,songNameDownload);
                 flag = true;
 
             } else {
-                ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, 100);
+                ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.READ_PHONE_STATE}, 100);
             }
         }
     }
@@ -237,10 +234,22 @@ public class SongListActivity extends AppCompatActivity implements BottomSheetSo
 
         if (requestCode == 100) {
             if (grantResults[0] == PackageManager.PERMISSION_GRANTED ) {
+                saveToDownloadDirectory(songUrlDownload,songNameDownload);
                 flag = true;
             }
+            else {
+                Toast.makeText(this, "Denied " + permissions[0], Toast.LENGTH_SHORT).show();
+
+            }
+            if(grantResults[1]==PackageManager.PERMISSION_GRANTED){
+
+            }
+            else {
+                Toast.makeText(this, "Denied " + permissions[1], Toast.LENGTH_SHORT).show();
+
+            }
         } else {
-            Toast.makeText(this, "Denied " + permissions[0], Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "Denied " + permissions[0] +" "+permissions[1], Toast.LENGTH_SHORT).show();
 
         }
 
@@ -253,6 +262,13 @@ public class SongListActivity extends AppCompatActivity implements BottomSheetSo
                 @Override
                 public void onAdapterClick(String hrm, String position) {
                     int index = Integer.parseInt(position);
+                    Intent intent = new Intent(SongListActivity.this,CurrentSongActivity.class);
+                    intent.putExtra("AlbumName",albumName);
+                    intent.putExtra("Image",imagepath);
+                    Audio audio = audioList.get(index);
+                    intent.putExtra("Artist",audio.getArtist());
+                    intent.putExtra("SongName",audio.getTitle());
+                    startActivity(intent);
                     playAudio(index);
                 }
             });
@@ -272,9 +288,6 @@ public class SongListActivity extends AppCompatActivity implements BottomSheetSo
     private void playAudio(int audioIndex) {
         //Check is service is active
         if (!audioserviceBound) {
-            if(bufferaudioserviceBound){
-                stopService(bufferplayerIntent);
-            }
             //Store Serializable audioList to SharedPreferences
             StorageUtil storage = new StorageUtil(getApplicationContext());
             storage.storeAudio(audioList);
@@ -284,33 +297,6 @@ public class SongListActivity extends AppCompatActivity implements BottomSheetSo
             audioplayerIntent.putExtra("AlbumImage",imagepath);
             startService(audioplayerIntent);
             bindService(audioplayerIntent, audioserviceConnection, Context.BIND_AUTO_CREATE);
-        } else {
-            //Store the new_releases audioIndex to SharedPreferences
-            StorageUtil storage = new StorageUtil(getApplicationContext());
-            storage.storeAudioIndex(audioIndex);
-
-            //Service is active
-            //Send a broadcast to the service -> PLAY_NEW_AUDIO
-            Intent broadcastIntent = new Intent(Broadcast_PLAY_NEW_AUDIO);
-            broadcastIntent.putExtra("AlbumImage",imagepath);
-            sendBroadcast(broadcastIntent);
-        }
-    }
-
-    private void bufferAudio(int audioIndex){
-        //Check is service is active
-        if (!bufferaudioserviceBound) {
-           if(audioserviceBound){
-               stopService(audioplayerIntent);
-           }
-            //Store Serializable audioList to SharedPreferences
-            StorageUtil storage = new StorageUtil(getApplicationContext());
-            storage.storeAudio(audioList);
-            storage.storeAudioIndex(audioIndex);
-
-            bufferplayerIntent.putExtra("AlbumImage",imagepath);
-            startService(bufferplayerIntent);
-            bindService(bufferplayerIntent, bufferServiceConnection, Context.BIND_AUTO_CREATE);
         } else {
             //Store the new_releases audioIndex to SharedPreferences
             StorageUtil storage = new StorageUtil(getApplicationContext());
@@ -338,6 +324,7 @@ public class SongListActivity extends AppCompatActivity implements BottomSheetSo
 
         if (cursor != null && cursor.getCount() > 0) {
             audioList = new ArrayList<>();
+            songNames = new ArrayList<>();
             while (cursor.moveToNext()) {
                 String data = cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Media.DATA));
                 String title = cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Media.TITLE));
@@ -346,8 +333,10 @@ public class SongListActivity extends AppCompatActivity implements BottomSheetSo
 
                 // Save to audioList
 
+                songNames.add(title);
 
-                audioList.add(new Audio(data, title, album, artist));
+
+                audioList.add(new Audio(data, title, album, artist,imagepath));
 
                 mSongList.add(new SongListClass(title,artist,imagepath,""));
             }
@@ -365,12 +354,13 @@ public class SongListActivity extends AppCompatActivity implements BottomSheetSo
             @Override
             public void onSuccess(DocumentSnapshot documentSnapshot) {
                 mAlbumSongMap = new HashMap<>();
-                mAlbumArtist = (String) documentSnapshot.get("Artist");                
+                mAlbumArtist = (String) documentSnapshot.get("Artist");
+                String image = (String) documentSnapshot.get("AlbumCover");
                 mAlbumSongMap = (HashMap<String, HashMap<String, String>>) documentSnapshot.get("SongList");
                 Log.i("SONGLIST ",albumName+" "+String.valueOf(mAlbumSongMap));
                 if (mAlbumSongMap != null ) {
 
-                    mPopulateSongList();
+                    mPopulateSongList(image);
                 }
             }
         }).addOnFailureListener(new OnFailureListener() {
@@ -384,31 +374,7 @@ public class SongListActivity extends AppCompatActivity implements BottomSheetSo
 
     }
 
-    /*private void temp() {
-
-        documentReference = firebaseFirestore.document("AllSongs/Essentials");
-        documentReference.get().addOnSuccessListener(new_releases OnSuccessListener<DocumentSnapshot>() {
-            @Override
-            public void onSuccess(DocumentSnapshot documentSnapshot) {
-                temphashmap = (HashMap<String, HashMap<String, String>>) documentSnapshot.get("SongList");
-                Toast.makeText(SongListActivity.this, "SUCCESS", Toast.LENGTH_SHORT).show();
-
-                Log.i("SUCCESS ", String.valueOf(temphashmap));
-
-            }
-        }).addOnFailureListener(new_releases OnFailureListener() {
-            @Override
-            public void onFailure(@NonNull Exception e) {
-                Toast.makeText(SongListActivity.this, "" + e.getMessage(), Toast.LENGTH_SHORT).show();
-                Log.i("on failure ", e.getMessage());
-
-            }
-        });
-    }*/
-
-
-
-    private void mPopulateSongList() {
+    private void mPopulateSongList(String image) {
         audioList = new ArrayList<>();
 
         Iterator<Map.Entry<String, HashMap<String, String>>> songListParent = mAlbumSongMap.entrySet().iterator();
@@ -431,15 +397,16 @@ public class SongListActivity extends AppCompatActivity implements BottomSheetSo
                 if(childPair.getKey().equals("Artist")){
                     artist = (String) childPair.getValue();
                     list.add(new SongListClass(parentPair.getKey(), (String) childPair.getValue(),imagepath,""));
-                   // artist = childPair.getValue().toString();
+                   // artistName = childPair.getValue().toString();
 
                 }
                 if(childPair.getKey().equals("SongUrl")){
 
                     songurl = (String) childPair.getValue();
-                    //list.add(new_releases SongListClass(parentPair.getKey(), artist,imagepath,songurl));
+                    //list.add(new_releases SongListClass(parentPair.getKey(), artistName,imagepath,songurl));
+                    songNames.add(songName);
 
-                    audioList.add(new Audio(songurl, songName, albumName, artist));
+                    audioList.add(new Audio(songurl, songName, albumName, artist,image));
                     Log.i("SONGLIST", ""+songName+" : "+songurl);
 
 
@@ -455,6 +422,13 @@ public class SongListActivity extends AppCompatActivity implements BottomSheetSo
             @Override
             public void onAdapterClick(String hrm, String position) {
                 int index = Integer.parseInt(position);
+                Intent intent = new Intent(SongListActivity.this,CurrentSongActivity.class);
+                intent.putExtra("AlbumName",albumName);
+                intent.putExtra("Image",imagepath);
+                Audio audio = audioList.get(index);
+                intent.putExtra("Artist",audio.getArtist());
+                intent.putExtra("SongName",audio.getTitle());
+                startActivity(intent);
                 playAudio(index);
             }
         });
@@ -474,16 +448,13 @@ public class SongListActivity extends AppCompatActivity implements BottomSheetSo
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.menu_main, menu);
         return true;
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
+
         int id = item.getItemId();
 
         //noinspection SimplifiableIfStatement
@@ -507,7 +478,6 @@ public class SongListActivity extends AppCompatActivity implements BottomSheetSo
         audioserviceBound = savedInstanceState.getBoolean("serviceStatus");
     }
 
-    //Binding this Client to the AudioPlayer Service
     private ServiceConnection audioserviceConnection = new ServiceConnection() {
         @Override
         public void onServiceConnected(ComponentName name, IBinder service) {
@@ -525,21 +495,6 @@ public class SongListActivity extends AppCompatActivity implements BottomSheetSo
         }
     };
 
-    private ServiceConnection bufferServiceConnection  = new ServiceConnection() {
-        @Override
-        public void onServiceConnected(ComponentName name, IBinder service) {
-            AudioStreamMediaService.LocalBinder binder = (AudioStreamMediaService.LocalBinder) service;
-            bufferAudioplayer = binder.getService();
-            bufferaudioserviceBound =true;
-
-        }
-
-        @Override
-        public void onServiceDisconnected(ComponentName name) {
-            bufferaudioserviceBound = false;
-
-        }
-    };
 
     @Override
     protected void onDestroy() {
@@ -547,14 +502,13 @@ public class SongListActivity extends AppCompatActivity implements BottomSheetSo
         finish();
     }
 
-
-
-
-
-
     @Override
     public void onBottomOptionSelected(String songurl, String songname) {
-        saveToDownloadDirectory(songurl,songname);
+        songNameDownload = songname;
+        songUrlDownload = songurl;
+        checkStoreagePersmission();
+
+     //   saveToDownloadDirectory(songurl,songname);
       // Toast.makeText(SongListActivity.this,songurl+songurl.length(),Toast.LENGTH_SHORT).show();
        // Toast.makeText(SongListActivity.this,songname,Toast.LENGTH_SHORT).show();
 

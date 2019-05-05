@@ -5,11 +5,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:fab="http://schemas.android.com/tools"
     android:background="#000">
-    <ProgressBar
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/progress_bar"
-        android:layout_gravity="center"/>
+
     <android.support.design.widget.AppBarLayout
         android:layout_width="match_parent"
         android:layout_height="300dp"
@@ -67,11 +63,13 @@
                     android:layout_marginBottom="70dp"
                     android:orientation="vertical">
                     <TextView
-                        android:layout_width="wrap_content"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:id="@+id/albumName"
-                        android:layout_gravity="center"
-                        android:textSize="35sp"
+                        android:gravity="center"
+                        style="@style/AppTheme.MyMusicTextStyle"
+                        android:fontFamily="@font/proximanovasemibold"
+                        android:textSize="30sp"
                         android:textColor="#fff"
 
                         android:text="Music Album"
@@ -80,10 +78,11 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:id="@+id/albumMadeForUser"
-                        android:textSize="15sp"
+                        style="@style/AppTheme.MyMusicTextStyle"
+                        android:fontFamily="@font/proximanovasemibold"
+                        android:textSize="13sp"
                         android:textColor="#fff"
                         android:layout_gravity="center"
-
                         android:textAllCaps="true"
                         android:text="Made for Aakash"
                         android:layout_marginTop="10dp"

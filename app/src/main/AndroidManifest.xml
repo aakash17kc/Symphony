@@ -23,15 +23,11 @@
         android:supportsRtl="true"
         android:theme="@style/FullscreenTheme">
         <activity android:name=".PreminumActivity"></activity>
-        <activity android:name=".SearchActivity" />
+        <activity android:name=".SearchActivity" android:launchMode="singleTask"/>
         <activity android:name=".DeviceSongsActivity" />
         <activity android:name=".OfflineSongListActivity" />
         <activity android:name=".TestActivity" />
 
-        <service
-            android:name=".AudioStreamMediaService"
-            android:enabled="true"
-            android:exported="true" />
         <service
             android:name=".MediaPlayerService"
             android:enabled="true"
